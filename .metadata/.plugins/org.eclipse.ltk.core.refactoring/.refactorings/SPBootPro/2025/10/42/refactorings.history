@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move element &apos;images&apos; to &apos;static&apos;&#x0D;&#x0A;- Original project: &apos;SPBootPro&apos;&#x0D;&#x0A;- Destination element: &apos;static&apos;&#x0D;&#x0A;- Original element: &apos;images&apos;&#x0D;&#x0A;- Update references to refactored element" description="Move folder" element1="src/main/resources/images" files="0" flags="589830" folders="1" id="org.eclipse.jdt.ui.move" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1760508561681" target="src/main/resources/static" units="0" version="1.0"/>
+</session>

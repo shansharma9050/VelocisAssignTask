@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Creation | Velocis</title>
+    <link href="/task_assignment.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <img src="/images/velocis-logo.png" class="logo" />
+    <ul>
+        <li><a th:href="@{/taskassignment/assignTask}"><i class="bi bi-plus-circle"></i> Add Task</a></li>
+        <li><a th:href="@{/taskassignment/developer}"><i class="bi bi-person-plus"></i> Add Developer</a></li>
+        <li><a th:href="@{/taskassignment/project}"><i class="bi bi-folder-plus"></i> Add Project</a></li>
+        <li><a th:href="@{/taskassignment/assignedTask}"><i class="bi bi-list-task"></i> All Tasks</a></li>
+		<li><a th:href="@{/taskassignment/myProfile}"><i class="bi bi-person-circle"></i> My Profile</a></li>
+		<li><a href="#"><i class="bi bi-bar-chart"></i> Reports</a></li>
+    </ul>
+    <div class="footer">© 2025 Velocis Systems Pvt. Ltd.</div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+
+    <div class="page-title">Add Task</div>
+
+    <div class="task-card">
+
+        <div th:if="${message}" class="success-box" th:text="${message}"></div>
+
+        <div class="section-title">Task Information</div>
+
+        <form th:action="@{/taskassignment/saveData}" method="post" enctype="multipart/form-data">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Project Module *</label>
+                    <select name="project" id="project" required>
+                        <option value="">-- Select Project --</option>
+                        <option th:each="p : ${projects}" th:value="${p.id}" th:text="${p.projectName}"></option>
+                    </select>
+                    <small class="error" id="projectError"></small>
+                </div>
+
+                <div class="form-group">
+                    <label>Assigned To *</label>
+                    <select name="developer" id="developer" required>
+                        <option value="">-- Select Developer --</option>
+                        <option th:each="d : ${developers}" th:value="${d.id}" th:text="${d.fullName}"></option>
+                    </select>
+                    <small class="error" id="developerError"></small>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Task Title *</label>
+                    <input type="text" name="taskTitle" id="taskTitle" placeholder="Enter task title" required>
+                    <small class="error" id="titleError"></small>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Sub Module *</label>
+                    <input type="text" name="module" id="module" placeholder="Enter Sub Module" required>
+                    <small class="error" id="moduleError"></small>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Task Details *</label>
+                    <textarea name="taskDetails" id="taskDetails" placeholder="Describe the task..." required></textarea>
+                    <small class="error" id="detailsError"></small>
+                </div>
+
+                <div class="form-group">
+                    <label>Priority *</label>
+                    <select name="priority" id="priority" required>
+                        <option value="">-- Select Priority --</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                    <small class="error" id="priorityError"></small>
+                </div>
+
+                <div class="form-group">
+                    <label>Status *</label>
+                    <select name="status" id="status" required>
+                        <option value="">-- Select Status --</option>
+                        <option value="0">Pending</option>
+                        <option value="1">In Progress</option>
+                        <option value="2">Completed</option>
+                    </select>
+                    <small class="error" id="statusError"></small>
+                </div>
+
+                <div class="form-group">
+                    <label>Due Date *</label>
+                    <input type="datetime-local" name="dueDate" id="dueDate" required>
+                    <small class="error" id="dateError"></small>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Upload Attachment</label>
+                    <input type="file" name="document" id="document" required>
+                    <small class="error" id="fileError"></small>
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn-submit">Create Task</button>
+        </form>
+    </div>
+</div>
+
+
+
+<!-- Confirmation Modal -->
+<div id="confirmModal" class="modal-overlay">
+    <div class="modal-box">
+        <h3>Confirm Task Submission</h3>
+        <p>Are you sure you want to submit this task?</p>
+
+        <div class="modal-buttons">
+            <button id="confirmYes" class="btn-yes">Yes, Submit</button>
+            <button id="confirmNo" class="btn-no">Cancel</button>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- VALIDATION + CONFIRMATION JS -->
+<script>
+const form = document.querySelector("form");
+
+form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    let valid = true;
+
+    const fields = {
+        project: "Please select project.",
+        developer: "Please select developer.",
+        taskTitle: "Task title must be at least 3 characters.",
+        module: "Sub module is required.",
+        taskDetails: "Task details must be at least 10 characters.",
+        priority: "Please select priority.",
+        status: "Please select status.",
+        dueDate: "Due date is required."
+    };
+
+    document.querySelectorAll(".error").forEach(e => e.textContent = "");
+    document.querySelectorAll(".error-field").forEach(e => e.classList.remove("error-field"));
+
+    for (let id in fields) {
+        let field = document.getElementById(id);
+        let errorBox = document.getElementById(id + "Error");
+
+        if (field.value.trim() === "" ||
+            (id === "taskTitle" && field.value.trim().length < 3) ||
+            (id === "taskDetails" && field.value.trim().length < 10)) {
+            errorBox.textContent = fields[id];
+            field.classList.add("error-field");
+            valid = false;
+        }
+    }
+
+    const file = document.getElementById("document");
+    const fileError = document.getElementById("fileError");
+
+    if (file.files.length > 0) {
+        const f = file.files[0];
+        const ext = f.name.split(".").pop().toLowerCase();
+        const allowed = ["pdf", "jpg", "png", "jpeg"];
+
+        if (!allowed.includes(ext)) {
+            fileError.textContent = "Only PDF, JPG, PNG allowed.";
+            file.classList.add("error-field");
+            valid = false;
+        }
+
+        if (f.size > 5 * 1024 * 1024) {
+            fileError.textContent = "File must be ≤ 5MB.";
+            file.classList.add("error-field");
+            valid = false;
+        }
+    }
+
+    if (!valid) return;
+
+    document.getElementById("confirmModal").style.display = "flex";
+});
+
+document.getElementById("confirmYes").onclick = function () {
+    form.submit();
+};
+
+document.getElementById("confirmNo").onclick = function () {
+    document.getElementById("confirmModal").style.display = "none";
+};
+</script>
+
+</body>
+</html>

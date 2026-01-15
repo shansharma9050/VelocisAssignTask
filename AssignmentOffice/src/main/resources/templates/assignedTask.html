@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Task List | Velocis</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/assignedTask.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="/images/velocis-logo.png" class="logo" />
+        </div>
+
+        <ul class="menu">
+            <li><a th:href="@{/taskassignment/assignTask}"><i class="bi bi-plus-circle"></i> Create Task</a></li>
+            <li><a th:href="@{/taskassignment/developer}"><i class="bi bi-person-plus"></i> Add Developer</a></li>
+            <li><a th:href="@{/taskassignment/project}"><i class="bi bi-folder-plus"></i> Add Project</a></li>
+            <li class="active"><a th:href="@{/taskassignment/assignedTask}"><i class="bi bi-list-task"></i> All Tasks</a></li>
+			<li><a href="@{/taskassignment/myProfile}"><i class="bi bi-person-circle"></i> My Profile</a></li>
+            <li><a href="#"><i class="bi bi-bar-chart"></i> Reports</a></li>
+        </ul>
+
+        <div class="footer">© 2025 Velocis Systems Pvt. Ltd.</div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+
+        <h1 class="page-title">All Tasks</h1>
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+
+            <div class="stat-card total">
+                <p><b>Total Tasks</b></p>
+                <h3 th:text="${totalCount}">0</h3>
+            </div>
+
+            <div class="stat-card not-started">
+                <p><b>Pending</b></p>
+                <h3 th:text="${pendingCount}">0</h3>
+            </div>
+
+            <div class="stat-card in-progress">
+                <p><b>In Progress</b></p>
+                <h3 th:text="${inProgressCount}">0</h3>
+            </div>
+
+            <div class="stat-card completed">
+                <p><b>Completed</b></p>
+                <h3 th:text="${completedCount}">0</h3>
+            </div>
+
+        </div>
+
+        <!-- Search Row -->
+        <div class="filter-row">
+
+            <input type="text" class="search-box" placeholder="Search task...">
+
+            <select class="filter-select">
+			  <option value="">Project</option>
+		      <option th:each="p : ${projects}" th:value="${p.id}" th:text="${p.projectName}"></option>
+            </select>
+
+            <select class="filter-select">
+				<option value="">Status</option>
+				 <option value="0">Pending</option>
+				 <option value="1">In Progress</option>
+				<option value="2">Completed</option>
+            </select>
+
+            <button class="btn btn-search">Search</button>
+            <button class="btn btn-reset">Reset</button>
+
+        </div>
+
+        <!-- Task Table -->
+        <div class="table-wrapper">
+            <table class="task-table">
+
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Project</th>
+                    <th>Module</th>
+                    <th>Task</th>
+                    <th>Assigned To</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+
+				<tbody>
+				<tr th:each="task, iter : ${taskList}">
+				    <td th:text="${iter.count}"></td>
+
+				    <td>
+				        <span class="tag project"
+				              th:text="${task.project != null ? (task.project.projectName ?: 'N/A') : 'N/A'}"></span>
+				    </td>
+
+				    <td th:text="${task.module ?: 'N/A'}"></td>
+
+				    <td>
+				        <a th:href="@{'/taskassignment/taskDetails/' + ${task.id}}"
+				           th:text="${task.taskDetails ?: 'N/A'}"
+				           class="task-link"></a>
+				    </td>
+
+				    <td th:text="${task.developer != null ? (task.developer.fullName ?: 'N/A') : 'N/A'}"></td>
+
+				    <td th:text="${task.dueDate != null ? #temporals.format(task.dueDate, 'dd-MM-yyyy') : 'N/A'}"></td>
+
+				    <td>
+				        <span class="badge status"
+				              th:classappend="${
+				                  task.status == 0 ? ' pending' :
+				                  task.status == 1 ? ' in-progress' :
+				                  task.status == 2 ? ' completed' : ''
+				              }"
+				              th:text="${
+				                  task.status == 0 ? 'Pending' :
+				                  task.status == 1 ? 'In Progress' :
+				                  task.status == 2 ? 'Completed' : 'N/A'
+				              }">
+				        </span>
+				    </td>
+
+				    <td>
+				        <span class="badge priority"
+				              th:classappend="' ' + ${(task.priority != null ? task.priority.toLowerCase() : 'low')}"
+				              th:text="${task.priority ?: 'N/A'}">
+				        </span>
+				    </td>
+
+				    <td>
+				        <a th:if="${task.id != null}"
+				           th:href="@{'/taskassignment/taskDetails/' + ${task.id}}">
+				            <i class="bi bi-eye action-icon"></i>
+				        </a>
+				        <span th:if="${task.id == null}">N/A</span>
+				    </td>
+				</tr>
+				</tbody>
+
+            </table>
+        </div>
+		<p class="success-message" th:if="${message}" th:text="${message}"></p>
+    </main>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+package com.example.demo.controller;
+
+public class TestMainClass {
+
+	public int getMissingNumber(int[] a,int num) {
+		int i = 0;
+		return i;
+	}
+	
+	public static void main(String[] args) {
+		
+		
+		
+	}
+
+}

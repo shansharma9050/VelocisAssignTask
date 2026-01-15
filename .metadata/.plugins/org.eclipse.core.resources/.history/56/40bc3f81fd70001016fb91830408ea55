@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Verification - MyApp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/verifyEmail.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+<div class="verification-container">
+    <!-- Velocis Logo -->
+    <div class="logo-container">
+        <img src="/images/velocis-logo.png" alt="Velocis Logo" class="logo">
+    </div>
+
+    <h2>Email Verification</h2>
+
+    <form id="otpForm" action="/auth/verify-otp" method="POST">
+        <label for="emailId">Email Address</label>
+        <input type="email" id="emailId" name="email" placeholder="Enter your email" required>
+
+        <button type="button" onclick="sendEmail()">Send OTP</button>
+
+        <label for="otp">Enter OTP</label>
+        <input type="text" id="otp" name="otp" placeholder="Enter OTP received" required>
+
+        <button type="submit">Verify & Continue</button>
+
+        <p class="message" style="color: lightgreen;" th:if="${message}" th:text="${message}"></p>
+        <p class="message" style="color: #ffbaba;" th:if="${error}" th:text="${error}"></p>
+    </form>
+
+    <div class="note">
+        Didn't receive the code? Check spam folder or click "Send OTP" again.
+    </div>
+</div>
+
+<script>
+    function sendEmail() {
+        var email = document.getElementById("emailId").value;
+
+        if (!email) {
+            alert("Please enter a valid email first.");
+            return;
+        }
+
+        $.ajax({
+            url: '/auth/send-otp',
+            type: 'POST',
+            data: { email: email },
+            dataType: 'text',
+            success: function (response) {
+                alert(response);
+            },
+            error: function (xhr) {
+                alert("Error: " + xhr.responseText);
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

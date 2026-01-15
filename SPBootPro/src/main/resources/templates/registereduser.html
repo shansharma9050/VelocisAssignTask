@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registered Users - Velocis</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #004C91 0%, #00ADEF 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .main-container {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 35px 40px;
+            margin: 50px auto;
+            width: 90%;
+            max-width: 1100px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-container img {
+            width: 140px;
+            height: auto;
+        }
+
+        h3 {
+            text-align: center;
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        table.dataTable tbody tr {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+
+        table.dataTable thead th {
+            background-color: #004C91;
+            color: #fff;
+            text-align: center;
+        }
+
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .form-label, .form-control {
+            color: white;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 6px rgba(0, 173, 239, 0.4);
+        }
+
+        .btn-primary {
+            background-color: #004C91;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .btn-primary:hover {
+            background-color: #003A73;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            border: none;
+            color: #000;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #b52b37;
+        }
+
+        .edit-form {
+            background-color: rgba(0, 0, 0, 0.35);
+            padding: 25px;
+            border-radius: 16px;
+            margin-top: 35px;
+            display: none;
+        }
+
+        label {
+            color: #fff;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+
+    <div class="logo-container">
+        <img th:src="@{/images/velocis-logo.png}" alt="Velocis Logo">
+    </div>
+
+    <h3>Registered Users</h3>
+
+    <div class="table-responsive">
+        <table id="userTable" class="table table-bordered table-hover text-center align-middle">
+            <thead>
+                <tr>
+                    <th>Sr.No.</th>
+                    <th>Role</th>
+                    <th>Email</th>
+                    <th>Username</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="details, ISTAT : ${spBootProModelList}">
+                    <td th:text="${ISTAT.count}">1</td>
+                    <td th:text="${details.role}">Admin</td>
+                    <td th:text="${details.email}">john@example.com</td>
+                    <td th:text="${details.username}">john123</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning me-2"
+                                th:onclick="'editUserDetails(' + ${details.id} + ')'">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger"
+                                th:onclick="'deleteUserDetails(' + ${details.id} + ')'">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Edit Form -->
+    <div class="edit-form" id="editModalId">
+        <h4 class="mb-3">Edit User Details</h4>
+        <form th:action="@{/contra/register}" th:object="${spBootProModel}" method="post">
+            <div class="mb-3">
+                <label for="nameId">Role</label>
+                <input type="text" name="role" id="nameId" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="emailId">Email</label>
+                <input type="email" name="email" id="emailId" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="usernameId">Username</label>
+                <input type="text" name="username" id="usernameId" class="form-control" required />
+                <input type="hidden" name="id" id="userId" />
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Update User</button>
+        </form>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#userTable').DataTable();
+        $('#editModalId').hide();
+    });
+
+    function editUserDetails(id) {
+        $.ajax({
+            url: '/api/getuser/' + id,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                $('#editModalId').fadeIn();
+                $('#nameId').val(data.role);
+                $('#emailId').val(data.email);
+                $('#usernameId').val(data.username);
+                $('#userId').val(data.id);
+            },
+            error: function () {
+                alert("Failed to load user data.");
+            }
+        });
+    }
+
+    function deleteUserDetails(id) {
+        if (confirm("Are you sure you want to delete this user?")) {
+            $.ajax({
+                url: '/api/deleteuser/' + id,
+                type: 'POST',
+                success: function (response) {
+                    alert(response.name + " has been deleted.");
+                    location.reload();
+                },
+                error: function () {
+                    alert("Error occurred during deletion.");
+                }
+            });
+        }
+    }
+</script>
+
+</body>
+</html>

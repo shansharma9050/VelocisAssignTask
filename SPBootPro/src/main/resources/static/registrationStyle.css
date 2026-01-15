@@ -1,0 +1,133 @@
+/* Velocis - User Registration Styling */
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
+
+    background-image: url("../images/Image1.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Soft overlay for readability */
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.65);
+    z-index: 0;
+}
+
+/* ------------------------------------------------ */
+
+.register-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.register-card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+    padding: 40px 50px;
+    width: 400px;
+    text-align: left;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+/* ------------------------------------------------ */
+
+.logo-container .logo {
+    width: 130px;
+    height: auto;
+}
+
+h2 {
+    color: #004C91;
+    font-weight: 600;
+    font-size: 1.8em;
+    text-align: center;
+}
+
+.subtitle {
+    color: #5a6a7a;
+    text-align: center;
+    font-size: 0.95em;
+    margin-bottom: 25px;
+}
+
+.form-label {
+    color: #004C91;
+    font-weight: 500;
+    font-size: 0.9em;
+}
+
+.form-control,
+.form-select {
+    background-color: #f9fbfd;
+    border: 1px solid #cfd8e3;
+    border-radius: 8px;
+    font-size: 0.95em;
+    padding: 10px 12px;
+    transition: 0.3s;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #00ADEF;
+    box-shadow: 0 0 6px rgba(0, 173, 239, 0.3);
+    outline: none;
+}
+
+.btn-register {
+    background-color: #004C91;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-register:hover {
+    background-color: #003A73;
+}
+
+.alert {
+    font-size: 0.9em;
+    text-align: center;
+}
+
+/* ------------------------------------------------ */
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ------------------------------------------------
+   MOBILE OPTIMIZATION
+------------------------------------------------ */
+@media (max-width: 480px) {
+    body::before {
+        display: none;
+    }
+
+    .register-card {
+        width: 90%;
+        padding: 30px 25px;
+    }
+}

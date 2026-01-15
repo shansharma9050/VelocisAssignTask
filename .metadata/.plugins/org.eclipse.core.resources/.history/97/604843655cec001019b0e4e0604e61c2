@@ -1,0 +1,225 @@
+/* ------------------------------------------------------- GLOBAL BASE -------------------------------------------------------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+    background: #f5f7fb;
+    color: #333;
+}
+
+/* ------------------------------------------------------- SIDEBAR -------------------------------------------------------- */
+
+.sidebar {
+    width: 240px;
+    background: #ffffff;
+    padding: 20px 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #e5e5e5;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+.sidebar-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.sidebar .logo {
+    width: 140px;
+}
+
+.nav-links {
+    list-style: none;
+    padding: 0 20px;
+}
+
+.nav-links li {
+    margin-bottom: 10px;
+}
+
+.nav-links li a {
+    text-decoration: none;
+    color: #333;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: background 0.2s ease-in-out;
+}
+
+.nav-links li a i {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.nav-links li a:hover,
+.nav-links li.active a {
+    background: #e6f0ff;
+    color: #0b5ed7;
+    font-weight: 600;
+}
+
+.footer {
+    margin-top: auto;
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+    padding-bottom: 12px;
+}
+
+/* ------------------------------------------------------- MAIN CONTENT (BACKGROUND IMAGE) -------------------------------------------------------- */
+
+.main-content {
+    margin-left: 240px;
+    padding: 40px;
+    width: calc(100% - 240px);
+    min-height: 100vh;
+
+    background-image: url("/images/Image1.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: relative;
+}
+
+/* Soft overlay for readability */
+.main-content::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.65);
+    z-index: 0;
+}
+
+/* Ensure content stays above overlay */
+.main-content > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* ------------------------------------------------------- PROJECT FORM WRAPPER -------------------------------------------------------- */
+
+.project-form {
+    background: #ffffff;
+    width: 520px;
+    margin: 0 auto;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+}
+
+.project-form h1 {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #123c7b;
+    margin-bottom: 25px;
+}
+
+/* ------------------------------------------------------- FORM GROUPS -------------------------------------------------------- */
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #123c7b;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    background: #fff;
+    outline: none;
+    transition: border 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.form-group textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+}
+
+/* ------------------------------------------------------- SUBMIT BUTTON -------------------------------------------------------- */
+
+.btn-submit {
+    width: 100%;
+    background: #0d6efd;
+    color: #fff;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.25s ease-in-out;
+}
+
+.btn-submit:hover {
+    background: #084dbf;
+}
+
+/* ------------------------------------------------------- RESPONSIVE DESIGN -------------------------------------------------------- */
+
+@media (max-width: 900px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .main-content {
+        margin-left: 200px;
+        width: calc(100% - 200px);
+    }
+
+    .project-form {
+        width: 90%;
+    }
+}
+
+@media (max-width: 600px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: none;
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 20px;
+    }
+
+    .project-form {
+        width: 100%;
+        padding: 22px;
+    }
+
+    /* Remove overlay on small screens for performance */
+    .main-content::before {
+        display: none;
+    }
+}

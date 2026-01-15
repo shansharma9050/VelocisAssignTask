@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Velocis Login Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+    <link href="/loginStyle.css" rel="stylesheet">
+</head>
+<body>
+    <form class="login-container" th:action="@{/login}" method="post">
+        <!-- Logo Section -->
+		<div class="logo-container">
+		           <img th:src="@{/images/velocis-logo.png}" alt="Velocis Logo" class="logo">
+		       </div>
+
+        <h2>Sign In</h2>
+
+        <!-- Message Display -->
+        <p class="success-message" th:if="${message}" th:text="${message}"></p>
+        <p class="error-message" th:if="${error}" th:text="${error}"></p>
+
+        <div th:if="${param.error}" class="error-message">
+            Invalid username or password
+        </div>
+
+        <div th:if="${param.logout}" class="info-message">
+            You have been logged out successfully.
+        </div>
+
+        <!-- Input Fields -->
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter username" required />
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter password" required />
+        </div>
+
+        <button type="submit" class="btn-login">Login</button>
+
+        <div class="form-footer">
+            <a href="/contra/act">Create an Account</a>
+        </div>
+
+        <!-- Social Buttons -->
+        <ul class="social-login">
+            <li>
+                <button type="button" class="social-btn">
+                    <img src="https://id-frontend.prod-east.frontend.public.atl-paas.net/assets/google-logo.5867462c.svg" alt="Google">
+                    Continue with Google
+                </button>
+            </li>
+            <li>
+                <button type="button" class="social-btn">
+                    <img src="https://id-frontend.prod-east.frontend.public.atl-paas.net/assets/microsoft-logo.c73d8dca.svg" alt="Microsoft">
+                    Continue with Microsoft
+                </button>
+            </li>
+        </ul>
+    </form>
+</body>
+</html>

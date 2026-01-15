@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move element &apos;images&apos; to &apos;SPBootPro/src/main/resources&apos;&#x0D;&#x0A;- Original project: &apos;SPBootPro&apos;&#x0D;&#x0A;- Destination element: &apos;SPBootPro/src/main/resources&apos;&#x0D;&#x0A;- Original element: &apos;images&apos;&#x0D;&#x0A;- Update references to refactored element" description="Move folder" destination="/src\/main\/resources=/maven.pomderived=/true=/=/optional=/true=/" element1="src/main/resources/static/images" files="0" flags="589830" folders="1" id="org.eclipse.jdt.ui.move" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1757584370317" units="0" version="1.0"/>
+</session>
