@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Dashboard</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+	<link th:href="@{/dashboard.css}" rel="stylesheet">
+
+</head>
+
+<body>
+
+	<div class="header">
+		<h2>Organization Dashboard</h2>
+
+		<div>Welcome, <b th:text="${#authentication.principal.userName}"></b></div>
+	</div>
+
+	<div class="dashboard">
+
+		<!-- TOP BANNER -->
+		<div class="top-banner">
+			<div class="welcome-text">
+				🚀 Welcome to Digital Workplace
+			</div>
+
+			<div>
+				All services in one place
+			</div>
+		</div>
+
+		<div class="cards">
+
+			<!-- Assignment -->
+			<div class="card assignment" onclick="location.href='/contra/assignTasksp'">
+				<i class="fa-solid fa-clipboard-list"></i>
+				<h3>Task Tracker</h3>
+				<p>Manage tasks, approvals and workflows</p>
+			</div>
+
+			<!-- Email -->
+			<div class="card email" onclick="location.href='/email'">
+				<i class="fa-solid fa-envelope"></i>
+				<h3>Email Service</h3>
+				<p>Internal communication system</p>
+			</div>
+
+			<!-- Webinar -->
+			<div class="card webinar" onclick="location.href='/webinar'">
+				<i class="fa-solid fa-video"></i>
+				<h3>Webinar</h3>
+				<p>Video conferencing & meetings</p>
+			</div>
+
+			<!-- Timesheet -->
+			<div class="card timesheet" onclick="location.href='/timesheet'">
+				<i class="fa-solid fa-clock"></i>
+				<h3>Digital Timesheet</h3>
+				<p>Attendance & work tracking</p>
+			</div>
+
+			<!-- AI -->
+			<div class="card ai" onclick="location.href='/ai-chat'">
+				<i class="fa-solid fa-robot"></i>
+				<h3>AI Chatbot</h3>
+				<p>Smart automation assistant</p>
+			</div>
+
+			<!-- Media -->
+			<div class="card media" onclick="location.href='/message/chatting'">
+				<i class="fa-solid fa-photo-film"></i>
+				<h3>Organization Media</h3>
+				<p>Gallery, docs & resources</p>
+			</div>
+
+		</div>
+	</div>
+
+</body>
+
+</html>

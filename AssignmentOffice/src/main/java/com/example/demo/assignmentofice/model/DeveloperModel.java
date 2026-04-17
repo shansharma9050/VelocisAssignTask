@@ -20,7 +20,7 @@ public class DeveloperModel {
 	    @Column(name = "full_name", nullable = false, length = 100)
 	    private String fullName;
 
-	    @Column(name = "email", nullable = false, unique = true, length = 120)
+	    @Column(name = "email", unique = true, length = 250)
 	    private String email;
 
 	    @Column(name = "phone", length = 20)
@@ -33,8 +33,10 @@ public class DeveloperModel {
 	    private String role;
 
 	    @Column(name = "skills", length = 250)
-	    private String skills; // e.g., "Java, Spring Boot, React"
+	    private String skills; 
 
 	    @Column(name = "resume_file", length = 255)
-	    private String resumeFile; // store resume file path or name
+	    private String resumeFile;
+	    
+	    
 }

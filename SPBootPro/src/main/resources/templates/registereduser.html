@@ -1,245 +1,665 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Registered Users - Velocis</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Bootstrap & Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+	<meta charset="UTF-8">
+	<title>Application For Registration | Velocis</title>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
-            background: linear-gradient(135deg, #004C91 0%, #00ADEF 100%);
-            min-height: 100vh;
-            color: #fff;
-        }
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-        .main-container {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(12px);
-            border-radius: 16px;
-            padding: 35px 40px;
-            margin: 50px auto;
-            width: 90%;
-            max-width: 1100px;
-            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 0.8s ease-in-out;
-        }
+	<!-- Bootstrap -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-        .logo-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+	<!-- DataTable -->
+	<link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 
-        .logo-container img {
-            width: 140px;
-            height: auto;
-        }
+	<!-- Icons -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
-        h3 {
-            text-align: center;
-            color: #fff;
-            font-weight: 600;
-            margin-bottom: 25px;
-        }
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-        table.dataTable tbody tr {
-            background-color: rgba(255, 255, 255, 0.15);
-            color: #fff;
-        }
+	<link href="/registeredUser.css" rel="stylesheet">
 
-        table.dataTable thead th {
-            background-color: #004C91;
-            color: #fff;
-            text-align: center;
-        }
-
-        .table {
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .form-label, .form-control {
-            color: white;
-        }
-
-        .form-control {
-            background: rgba(255, 255, 255, 0.15);
-            border: none;
-            border-radius: 8px;
-            color: #fff;
-        }
-
-        .form-control:focus {
-            background: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 0 6px rgba(0, 173, 239, 0.4);
-        }
-
-        .btn-primary {
-            background-color: #004C91;
-            border: none;
-            border-radius: 8px;
-        }
-
-        .btn-primary:hover {
-            background-color: #003A73;
-        }
-
-        .btn-warning {
-            background-color: #ffc107;
-            border: none;
-            color: #000;
-        }
-
-        .btn-warning:hover {
-            background-color: #e0a800;
-        }
-
-        .btn-danger {
-            background-color: #dc3545;
-            border: none;
-        }
-
-        .btn-danger:hover {
-            background-color: #b52b37;
-        }
-
-        .edit-form {
-            background-color: rgba(0, 0, 0, 0.35);
-            padding: 25px;
-            border-radius: 16px;
-            margin-top: 35px;
-            display: none;
-        }
-
-        label {
-            color: #fff;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
 </head>
+
+
 <body>
+	<div class="top-navbar">
+		<div class="live-clock" id="liveClock"></div>
+		<div class="theme-toggle" onclick="toggleTheme()">
+			<i id="themeIcon" class="fa-solid fa-moon"></i>
+		</div>
+		<div class="top-search">
+		    <i class="bi bi-search"></i>
+		    <input type="text" placeholder="Search tasks, projects..." id="globalSearch">
+		</div>
+		<div class="user-dropdown">
 
-<div class="main-container">
+			<div class="user-info" onclick="toggleDropdown()">
+				<img th:src="@{/images/user.jpg}" class="user-avatar">
+				<div class="user-text">
+					<div class="user-name">Shankar Sharma</div>
+					<div class="user-role">Developer</div>
+				</div>
+				<i class="bi bi-chevron-down"></i>
+			</div>
 
-    <div class="logo-container">
-        <img th:src="@{/images/velocis-logo.png}" alt="Velocis Logo">
-    </div>
+			<div class="dropdown-menu" id="dropdownMenu">
+				<div class="welcome">Welcome Shankar Sharma!</div>
 
-    <h3>Registered Users</h3>
+				<a th:href="@{/taskassignment/myProfile}">
+					<i class="bi bi-person"></i> Profile
+				</a>
 
-    <div class="table-responsive">
-        <table id="userTable" class="table table-bordered table-hover text-center align-middle">
-            <thead>
-                <tr>
-                    <th>Sr.No.</th>
-                    <th>Role</th>
-                    <th>Email</th>
-                    <th>Username</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="details, ISTAT : ${spBootProModelList}">
-                    <td th:text="${ISTAT.count}">1</td>
-                    <td th:text="${details.role}">Admin</td>
-                    <td th:text="${details.email}">john@example.com</td>
-                    <td th:text="${details.username}">john123</td>
-                    <td>
-                        <button class="btn btn-sm btn-warning me-2"
-                                th:onclick="'editUserDetails(' + ${details.id} + ')'">
-                            <i class="bi bi-pencil-square"></i> Edit
-                        </button>
-                        <button class="btn btn-sm btn-danger"
-                                th:onclick="'deleteUserDetails(' + ${details.id} + ')'">
-                            <i class="bi bi-trash"></i> Delete
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+				<a th:href="@{/taskassignment/assignedTask}">
+					<i class="bi bi-list-task"></i> Taskboard
+				</a>
 
-    <!-- Edit Form -->
-    <div class="edit-form" id="editModalId">
-        <h4 class="mb-3">Edit User Details</h4>
-        <form th:action="@{/contra/register}" th:object="${spBootProModel}" method="post">
-            <div class="mb-3">
-                <label for="nameId">Role</label>
-                <input type="text" name="role" id="nameId" class="form-control" required />
-            </div>
+				<a th:href="@{/logout}" class="logout-btn">
+					<i class="bi bi-box-arrow-right"></i> Logout
+				</a>
 
-            <div class="mb-3">
-                <label for="emailId">Email</label>
-                <input type="email" name="email" id="emailId" class="form-control" required />
-            </div>
+			</div>
 
-            <div class="mb-3">
-                <label for="usernameId">Username</label>
-                <input type="text" name="username" id="usernameId" class="form-control" required />
-                <input type="hidden" name="id" id="userId" />
-            </div>
+		</div>
 
-            <button type="submit" class="btn btn-primary w-100">Update User</button>
-        </form>
-    </div>
-</div>
+	</div>
 
-<!-- Scripts -->
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+	<div class="sidebar">
+		<img th:src="@{/images/velocis-logo.png}" class="logo" />
 
-<script>
-    $(document).ready(function () {
-        $('#userTable').DataTable();
-        $('#editModalId').hide();
-    });
+		<ul>
 
-    function editUserDetails(id) {
-        $.ajax({
-            url: '/api/getuser/' + id,
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                $('#editModalId').fadeIn();
-                $('#nameId').val(data.role);
-                $('#emailId').val(data.email);
-                $('#usernameId').val(data.username);
-                $('#userId').val(data.id);
-            },
-            error: function () {
-                alert("Failed to load user data.");
-            }
-        });
-    }
+			<li><a th:href="@{/dash/dashboard}"><i class="bi bi-columns-gap"></i> Dashboard</a>
+			<li class="active" sec:authorize="hasAuthority('ROLE_ADMIN')">
+				<a th:href="@{/registereduser}">
+					<i class="bi bi-file-earmark-text"></i> User Application
+				</a>
+			</li>
+			<!-- Projects -->
+			<li class="menu-item">
+				<div class="menu-title" onclick="toggleMenu(this)">
+					<span><i class="bi bi-folder"></i> Projects</span>
+					<i class="bi bi-chevron-right arrow"></i>
+				</div>
+				<ul class="submenu">
+					<li>
+						<a href="#">
+							<i class="bi bi-kanban"></i> Project Management
+						</a>
+					</li>
+					<li sec:authorize="hasAuthority('ROLE_ADMIN')"><a th:href="@{/taskassignment/project}"><i
+								class="bi bi-folder-plus"></i> Add Project</a></li>
+				</ul>
+			</li>
 
-    function deleteUserDetails(id) {
-        if (confirm("Are you sure you want to delete this user?")) {
-            $.ajax({
-                url: '/api/deleteuser/' + id,
-                type: 'POST',
-                success: function (response) {
-                    alert(response.name + " has been deleted.");
-                    location.reload();
-                },
-                error: function () {
-                    alert("Error occurred during deletion.");
-                }
-            });
-        }
-    }
-</script>
+			<!-- Task -->
+			<li class="menu-item">
+				<div class="menu-title" onclick="toggleMenu(this)">
+					<span><i class="bi bi-list-task"></i> Task</span>
+					<i class="bi bi-chevron-right arrow"></i>
+				</div>
+				<ul class="submenu">
+
+					<li><a th:href="@{/taskassignment/assignTask}"><i class="bi bi-plus-circle"></i>
+							Create Task</a></li>
+					<li>
+						<a th:href="@{/taskassignment/assignedTask}">
+							<i class="bi bi-list-check"></i> All Tasks
+						</a>
+					</li>
+				</ul>
+			</li>
+
+			<li><a href="#"><i class="bi bi-calendar-week"></i> Weekly Planner</a></li>
+			<li>
+				<a href="#"><i class="bi bi-bug"></i> Bugs</a>
+			</li>
+			<li><a href="#"><i class="bi bi-headset"></i> Helpdesk</a></li>
+			<li><a href="#"><i class="bi bi-people"></i> Meetings</a></li>
+			<li><a href="#"><i class="bi bi-envelope"></i> Letters</a></li>
+
+			<!-- Training -->
+			<li class="menu-item">
+				<div class="menu-title" onclick="toggleMenu(this)">
+					<span><i class="bi bi-mortarboard"></i> Training Management</span>
+					<i class="bi bi-chevron-right arrow"></i>
+				</div>
+				<ul class="submenu">
+					<li><a href="#">Training List</a></li>
+				</ul>
+			</li>
+
+			<!-- Knowledge -->
+			<li class="menu-item">
+				<div class="menu-title" onclick="toggleMenu(this)">
+					<span><i class="bi bi-journal"></i> Knowledge Management</span>
+					<i class="bi bi-chevron-right arrow"></i>
+				</div>
+				<ul class="submenu">
+					<li><a href="#">Documents</a></li>
+				</ul>
+			</li>
+
+			<li><a href="#"><i class="bi bi-megaphone"></i> Announcements</a></li>
+
+			<!-- Survey -->
+			<li class="menu-item">
+				<div class="menu-title" onclick="toggleMenu(this)">
+					<span><i class="bi bi-ui-checks"></i> Survey Module</span>
+					<i class="bi bi-chevron-right arrow"></i>
+				</div>
+				<ul class="submenu">
+					<li><a href="#">Create Survey</a></li>
+				</ul>
+			</li>
+
+			<li><a href="#"><i class="bi bi-cloud"></i> Digital Documents</a></li>
+			<li><a href="#"><i class="bi bi-camera-video"></i> Videos Management</a></li>
+			<li><a href="#"><i class="bi bi-broadcast"></i> Webinars</a></li>
+			<li><a href="#"><i class="bi bi-exclamation-triangle"></i> Incidents</a></li>
+
+			<li><a th:href="@{/taskassignment/myProfile}"><i class="bi bi-person"></i> My Profile</a></li>
+			<li><a th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+
+		</ul>
+	</div>
+	<!-- TOP NAVBAR -->
+
+	<div class="topbar">
+
+		<div class="brand">
+
+			<img src="/images/velocis-logo.png">
+
+		</div>
+	</div>
+
+
+
+	<!-- MAIN CONTAINER -->
+
+	<div class="container-fluid page-container">
+
+
+
+		<!-- DASHBOARD STATS -->
+
+		<div class="row stats-row">
+
+			<div class="col-md-4">
+
+				<div class="stat-card">
+
+					<i class="bi bi-people-fill"></i>
+
+					<div>
+
+						<h3 th:text="${#lists.size(spBootProModelList)}">0</h3>
+
+						<p>Total Users</p>
+
+					</div>
+
+				</div>
+
+			</div>
+
+
+
+			<div class="col-md-4">
+
+				<div class="stat-card">
+
+					<i class="bi bi-person-check-fill"></i>
+
+					<div>
+
+						<h3>Active</h3>
+
+						<p>Registered Users</p>
+
+					</div>
+
+				</div>
+
+			</div>
+
+
+
+			<div class="col-md-4">
+
+				<div class="stat-card">
+
+					<i class="bi bi-person-plus-fill"></i>
+
+					<div>
+
+						<h3>New</h3>
+
+						<p>Applications</p>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+
+
+		<!-- TABLE CARD -->
+
+		<div class="card table-card">
+
+			<div class="card-header">
+
+				<h5>
+
+					<i class="bi bi-person-lines-fill"></i>
+
+					Application For Registration Users List
+
+				</h5>
+
+			</div>
+
+
+
+			<div class="card-body">
+
+
+
+				<table id="userTable" class="table table-hover align-middle">
+
+
+
+					<thead>
+
+						<tr>
+
+							<th>#</th>
+							<th>Username</th>
+							<th>Email</th>
+							<th>Phone</th>
+							<th>Emp Code</th>
+							<th>Role</th>
+							<th class="text-center">Action</th>
+
+						</tr>
+
+					</thead>
+
+
+
+					<tbody>
+
+
+
+						<tr th:each="details, ISTAT : ${spBootProModelList}">
+
+							<td th:text="${ISTAT.count}"></td>
+
+							<td th:text="${details.username}"></td>
+
+							<td th:text="${details.email}"></td>
+
+							<td th:text="${details.phonenumber}"></td>
+
+							<td th:text="${details.empcode}"></td>
+
+							<td th:text="${details.role}"></td>
+
+							<td class="text-center">
+
+								<a th:href="@{'/contra/userDetails/' + ${details.id}}" class="btn action-view">
+									<i class="bi bi-eye"></i>
+								</a>
+
+								<button class="btn action-edit" th:onclick="'editUserDetails(' + ${details.id} + ')'">
+
+									<i class="bi bi-pencil"></i>
+
+								</button>
+
+
+
+								<button class="btn action-delete"
+									th:onclick="'deleteUserDetails(' + ${details.id} + ')'">
+
+									<i class="bi bi-trash"></i>
+
+								</button>
+
+
+
+							</td>
+
+						</tr>
+
+
+
+					</tbody>
+
+				</table>
+
+
+
+			</div>
+
+		</div>
+
+
+
+	</div>
+
+
+
+	<!-- EDIT USER MODAL -->
+
+	<div class="modal fade" id="editModalId">
+
+		<div class="modal-dialog">
+
+			<div class="modal-content">
+
+
+
+				<div class="modal-header">
+
+					<h5>Edit User Details</h5>
+
+					<button class="btn-close" data-bs-dismiss="modal"></button>
+
+				</div>
+
+
+
+				<div class="modal-body">
+
+
+
+					<form th:action="@{/contra/register}" th:object="${spBootProModel}" method="post">
+
+
+
+						<div class="mb-3">
+
+							<label>Role</label>
+
+							<input type="text" name="role" id="nameId" class="form-control" required>
+
+						</div>
+
+
+
+						<div class="mb-3">
+
+							<label>Email</label>
+
+							<input type="email" name="email" id="emailId" class="form-control" required>
+
+						</div>
+
+
+
+						<div class="mb-3">
+
+							<label>Username</label>
+
+							<input type="text" name="username" id="usernameId" class="form-control" required>
+
+
+
+							<input type="hidden" name="id" id="userId">
+
+						</div>
+
+
+
+						<button class="btn btn-primary w-100">
+
+							Update User
+
+						</button>
+
+
+
+					</form>
+
+
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+	<div class="footer-bar">
+	    <div class="footer-item blue">
+	        <span>V-Smart</span>
+	        <i class="bi bi-arrow-right"></i>
+	    </div>
+
+	    <div class="footer-item orange">
+	        <span>OMP</span>
+	        <i class="bi bi-arrow-right"></i>
+	    </div>
+
+	    <div class="footer-item purple">
+	        <span>VERR</span>
+	        <i class="bi bi-arrow-right"></i>
+	    </div>
+
+	    <div class="footer-item darkblue">
+	        <span>Zing HR</span>
+	        <i class="bi bi-arrow-right"></i>
+	    </div>
+
+	    <div class="footer-item green">
+	        <span>Payroll</span>
+	        <i class="bi bi-arrow-right"></i>
+	    </div>
+
+	    <div class="footer-item indigo">
+	        <span>Tech Support</span>
+	        <i class="bi bi-arrow-right"></i>
+	    </div>
+	</div>
+
+
+	<!-- SCRIPTS -->
+
+	<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+	<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+	<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+
+
+	<script>
+
+
+
+		$(document).ready(function () {
+
+			$('#userTable').DataTable();
+
+		});
+
+
+
+		function editUserDetails(id) {
+
+			$.ajax({
+
+				url: '/api/getuser/' + id,
+
+				type: 'GET',
+
+				dataType: 'json',
+
+				success: function (data) {
+
+
+
+					$('#nameId').val(data.role);
+
+					$('#emailId').val(data.email);
+
+					$('#usernameId').val(data.username);
+
+					$('#userId').val(data.id);
+
+
+
+					var modal = new bootstrap.Modal(document.getElementById('editModalId'));
+
+					modal.show();
+
+				},
+
+				error: function () {
+
+					alert("Failed to load user data.");
+
+				}
+
+			});
+
+		}
+
+
+
+		function deleteUserDetails(id) {
+
+			if (confirm("Are you sure you want to delete this user?")) {
+
+
+
+				$.ajax({
+
+					url: '/api/deleteuser/' + id,
+
+					type: 'POST',
+
+					success: function (response) {
+
+						alert("User deleted successfully");
+
+						location.reload();
+
+					},
+
+					error: function () {
+
+						alert("Error occurred during deletion.");
+
+					}
+
+				});
+
+			}
+
+		}
+
+		function toggleDropdown() {
+			const menu = document.getElementById("dropdownMenu");
+
+			if (menu.style.display === "flex") {
+				menu.style.display = "none";
+			} else {
+				menu.style.display = "flex";
+			}
+		}
+
+		function toggleTheme() {
+			document.body.classList.toggle("dark");
+
+			const icon = document.getElementById("themeIcon");
+
+			if (document.body.classList.contains("dark")) {
+				icon.classList.remove("fa-moon");
+				icon.classList.add("fa-sun");
+				localStorage.setItem("theme", "dark");
+			} else {
+				icon.classList.remove("fa-sun");
+				icon.classList.add("fa-moon");
+				localStorage.setItem("theme", "light");
+			}
+		}
+
+		// load saved theme
+		window.onload = function () {
+			const savedTheme = localStorage.getItem("theme");
+
+			if (savedTheme === "dark") {
+				document.body.classList.add("dark");
+				document.getElementById("themeIcon")
+					.classList.replace("fa-moon", "fa-sun");
+			}
+		}
+
+		function toggleMenu(element) {
+			const parent = element.parentElement;
+
+			// close others (optional but looks professional)
+			document.querySelectorAll(".menu-item").forEach(item => {
+				if (item !== parent) {
+					item.classList.remove("open");
+				}
+			});
+
+			parent.classList.toggle("open");
+		}
+		
+		function updateClock() {
+		    const now = new Date();
+
+		    const options = {
+		        weekday: 'short',
+		        day: '2-digit',
+		        month: 'short',
+		        year: 'numeric'
+		    };
+
+		    const datePart = now.toLocaleDateString('en-IN', options);
+
+		    const timePart = now.toLocaleTimeString('en-IN', {
+		        hour12: false
+		    });
+
+		    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+		    document.getElementById("liveClock").textContent =
+		        `${datePart} ${timePart} ${timezone}`;
+		}
+
+		// update every second
+		setInterval(updateClock, 1000);
+
+		// run immediately on load
+		updateClock();
+		
+		document.getElementById("globalSearch").addEventListener("keyup", function () {
+		    let value = this.value.toLowerCase();
+		    let rows = document.querySelectorAll(".task-table tbody tr");
+
+		    rows.forEach(row => {
+		        let text = row.innerText.toLowerCase();
+		        row.style.display = text.includes(value) ? "" : "none";
+		    });
+		});
+	</script>
+
+
 
 </body>
+
 </html>

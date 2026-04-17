@@ -38,6 +38,9 @@ public class AssignmentOfficeModel {
 	@JoinColumn(name = "developer", referencedColumnName = "id")
 	private DeveloperModel developer;  
 	
+	@Column(name="developerId")
+	private String developerId;
+	
 	@Column(name="priority")
 	private String priority;
 	

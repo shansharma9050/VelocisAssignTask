@@ -1,163 +1,499 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Task List | Velocis</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="/assignedTask.css" rel="stylesheet">
+<head>
+	<meta charset="UTF-8">
+	<title>Task List | Velocis</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+	<link th:href="@{/assignedTask.css}" rel="stylesheet">
 </head>
 
 <body>
 
-<div class="layout">
+	<div class="top-navbar">
+		<div class="live-clock" id="liveClock"></div>
+		<div class="theme-toggle" onclick="toggleTheme()">
+			<i id="themeIcon" class="fa-solid fa-moon"></i>
+		</div>
+		<div class="top-search">
+		    <i class="bi bi-search"></i>
+		    <input type="text" placeholder="Search tasks, projects..." id="globalSearch">
+		</div>
+		<div class="user-dropdown">
 
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <img src="/images/velocis-logo.png" class="logo" />
-        </div>
+			<div class="user-info" onclick="toggleDropdown()">
+				<img th:src="@{/images/user.jpg}" class="user-avatar">
+				<div class="user-text">
+					<div class="user-name" th:text="${#authentication.principal.userName}"></div>
+					<div class="user-role" th:text="${#authentication.principal.role}"></div>
+				</div>
+				<i class="bi bi-chevron-down"></i>
+			</div>
 
-        <ul class="menu">
-            <li><a th:href="@{/taskassignment/assignTask}"><i class="bi bi-plus-circle"></i> Create Task</a></li>
-            <li><a th:href="@{/taskassignment/developer}"><i class="bi bi-person-plus"></i> Add Developer</a></li>
-            <li><a th:href="@{/taskassignment/project}"><i class="bi bi-folder-plus"></i> Add Project</a></li>
-            <li class="active"><a th:href="@{/taskassignment/assignedTask}"><i class="bi bi-list-task"></i> All Tasks</a></li>
-			<li><a href="@{/taskassignment/myProfile}"><i class="bi bi-person-circle"></i> My Profile</a></li>
-            <li><a href="#"><i class="bi bi-bar-chart"></i> Reports</a></li>
-        </ul>
+			<div class="dropdown-menu" id="dropdownMenu">
+				<div>Welcome, <b th:text="${#authentication.principal.userName}"></b></div>
 
-        <div class="footer">© 2025 Velocis Systems Pvt. Ltd.</div>
-    </aside>
+				<a th:href="@{/taskassignment/myProfile}">
+					<i class="bi bi-person"></i> Profile
+				</a>
 
-    <!-- Main Content -->
-    <main class="main">
+				<a th:href="@{/taskassignment/assignedTask}">
+					<i class="bi bi-list-task"></i> Taskboard
+				</a>
 
-        <h1 class="page-title">All Tasks</h1>
+				<a th:href="@{/logout}" class="logout-btn">
+					<i class="bi bi-box-arrow-right"></i> Logout
+				</a>
 
-        <!-- Statistics -->
-        <div class="stats-grid">
+			</div>
 
-            <div class="stat-card total">
-                <p><b>Total Tasks</b></p>
-                <h3 th:text="${totalCount}">0</h3>
-            </div>
+		</div>
 
-            <div class="stat-card not-started">
-                <p><b>Pending</b></p>
-                <h3 th:text="${pendingCount}">0</h3>
-            </div>
+	</div>
+	<div class="layout">
 
-            <div class="stat-card in-progress">
-                <p><b>In Progress</b></p>
-                <h3 th:text="${inProgressCount}">0</h3>
-            </div>
+		<!-- Sidebar -->
+		<div class="sidebar">
+			<img th:src="@{/images/velocis-logo.png}" class="logo" />
 
-            <div class="stat-card completed">
-                <p><b>Completed</b></p>
-                <h3 th:text="${completedCount}">0</h3>
-            </div>
+			<ul>
 
-        </div>
+				<li><a th:href="@{/dash/dashboard}"><i class="bi bi-columns-gap"></i> Dashboard</a>
+					<!-- Projects -->
+				<li class="menu-item">
+					<div class="menu-title" onclick="toggleMenu(this)">
+						<span><i class="bi bi-folder"></i> Projects</span>
+						<i class="bi bi-chevron-right arrow"></i>
+					</div>
+					<ul class="submenu">
+						<li>
+							<a href="#">
+								<i class="bi bi-kanban"></i> Project Management
+							</a>
+						</li>
+						<li sec:authorize="hasAuthority('ROLE_ADMIN')"><a th:href="@{/taskassignment/project}"><i
+									class="bi bi-folder-plus"></i> Add Project</a></li>
+					</ul>
+				</li>
 
-        <!-- Search Row -->
-        <div class="filter-row">
+				<!-- Task -->
+				<li class="menu-item">
+					<div class="menu-title" onclick="toggleMenu(this)">
+						<span><i class="bi bi-list-task"></i> Task</span>
+						<i class="bi bi-chevron-right arrow"></i>
+					</div>
+					<ul class="submenu">
 
-            <input type="text" class="search-box" placeholder="Search task...">
+						<li><a th:href="@{/taskassignment/assignTask}"><i class="bi bi-plus-circle"></i> Create Task</a>
+						</li>
+						<li class="active">
+							<a th:href="@{/taskassignment/assignedTask}">
+								<i class="bi bi-list-check"></i> All Tasks
+							</a>
+						</li>
 
-            <select class="filter-select">
-			  <option value="">Project</option>
-		      <option th:each="p : ${projects}" th:value="${p.id}" th:text="${p.projectName}"></option>
-            </select>
+					</ul>
+				</li>
 
-            <select class="filter-select">
-				<option value="">Status</option>
-				 <option value="0">Pending</option>
-				 <option value="1">In Progress</option>
-				<option value="2">Completed</option>
-            </select>
+				<li><a href="#"><i class="bi bi-calendar-week"></i> Weekly Planner</a></li>
+				<li>
+					<a href="#"><i class="bi bi-bug"></i> Bugs</a>
+				</li>
+				<li><a href="#"><i class="bi bi-headset"></i> Helpdesk</a></li>
+				<li><a href="#"><i class="bi bi-people"></i> Meetings</a></li>
+				<li><a href="#"><i class="bi bi-envelope"></i> Letters</a></li>
 
-            <button class="btn btn-search">Search</button>
-            <button class="btn btn-reset">Reset</button>
+				<!-- Training -->
+				<li class="menu-item">
+					<div class="menu-title" onclick="toggleMenu(this)">
+						<span><i class="bi bi-mortarboard"></i> Training Management</span>
+						<i class="bi bi-chevron-right arrow"></i>
+					</div>
+					<ul class="submenu">
+						<li><a href="#">Training List</a></li>
+					</ul>
+				</li>
 
-        </div>
+				<!-- Knowledge -->
+				<li class="menu-item">
+					<div class="menu-title" onclick="toggleMenu(this)">
+						<span><i class="bi bi-journal"></i> Knowledge Management</span>
+						<i class="bi bi-chevron-right arrow"></i>
+					</div>
+					<ul class="submenu">
+						<li><a href="#">Documents</a></li>
+					</ul>
+				</li>
 
-        <!-- Task Table -->
-        <div class="table-wrapper">
-            <table class="task-table">
+				<li><a href="#"><i class="bi bi-megaphone"></i> Announcements</a></li>
 
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Project</th>
-                    <th>Module</th>
-                    <th>Task</th>
-                    <th>Assigned To</th>
-                    <th>Due Date</th>
-                    <th>Status</th>
-                    <th>Priority</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
+				<!-- Survey -->
+				<li class="menu-item">
+					<div class="menu-title" onclick="toggleMenu(this)">
+						<span><i class="bi bi-ui-checks"></i> Survey Module</span>
+						<i class="bi bi-chevron-right arrow"></i>
+					</div>
+					<ul class="submenu">
+						<li><a href="#">Create Survey</a></li>
+					</ul>
+				</li>
 
-				<tbody>
-				<tr th:each="task, iter : ${taskList}">
-				    <td th:text="${iter.count}"></td>
+				<li><a href="#"><i class="bi bi-cloud"></i> Digital Documents</a></li>
+				<li><a href="#"><i class="bi bi-camera-video"></i> Videos Management</a></li>
+				<li><a href="#"><i class="bi bi-broadcast"></i> Webinars</a></li>
+				<li><a href="#"><i class="bi bi-exclamation-triangle"></i> Incidents</a></li>
 
-				    <td>
-				        <span class="tag project"
-				              th:text="${task.project != null ? (task.project.projectName ?: 'N/A') : 'N/A'}"></span>
-				    </td>
+				<li><a th:href="@{/taskassignment/myProfile}"><i class="bi bi-person"></i> My Profile</a></li>
+				<li><a th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
 
-				    <td th:text="${task.module ?: 'N/A'}"></td>
+			</ul>
+		</div>
 
-				    <td>
-				        <a th:href="@{'/taskassignment/taskDetails/' + ${task.id}}"
-				           th:text="${task.taskDetails ?: 'N/A'}"
-				           class="task-link"></a>
-				    </td>
 
-				    <td th:text="${task.developer != null ? (task.developer.fullName ?: 'N/A') : 'N/A'}"></td>
+		<!-- MAIN CONTENT -->
 
-				    <td th:text="${task.dueDate != null ? #temporals.format(task.dueDate, 'dd-MM-yyyy') : 'N/A'}"></td>
+		<main class="main">
 
-				    <td>
-				        <span class="badge status"
-				              th:classappend="${
-				                  task.status == 0 ? ' pending' :
-				                  task.status == 1 ? ' in-progress' :
-				                  task.status == 2 ? ' completed' : ''
-				              }"
-				              th:text="${
-				                  task.status == 0 ? 'Pending' :
-				                  task.status == 1 ? 'In Progress' :
-				                  task.status == 2 ? 'Completed' : 'N/A'
-				              }">
-				        </span>
-				    </td>
+			<h1 class="page-title">All Tasks</h1>
 
-				    <td>
-				        <span class="badge priority"
-				              th:classappend="' ' + ${(task.priority != null ? task.priority.toLowerCase() : 'low')}"
-				              th:text="${task.priority ?: 'N/A'}">
-				        </span>
-				    </td>
 
-				    <td>
-				        <a th:if="${task.id != null}"
-				           th:href="@{'/taskassignment/taskDetails/' + ${task.id}}">
-				            <i class="bi bi-eye action-icon"></i>
-				        </a>
-				        <span th:if="${task.id == null}">N/A</span>
-				    </td>
-				</tr>
-				</tbody>
+			<!-- STATS -->
 
-            </table>
-        </div>
-		<p class="success-message" th:if="${message}" th:text="${message}"></p>
-    </main>
-</div>
+			<div class="stats-grid">
+
+				<div class="stat-card total">
+					<p><b>Total Tasks</b></p>
+					<h3 th:text="${totalCount}">0</h3>
+				</div>
+
+				<div class="stat-card not-started">
+					<p><b>Pending</b></p>
+					<h3 th:text="${pendingCount}">0</h3>
+				</div>
+
+				<div class="stat-card in-progress">
+					<p><b>In Progress</b></p>
+					<h3 th:text="${inProgressCount}">0</h3>
+				</div>
+
+				<div class="stat-card completed">
+					<p><b>Completed</b></p>
+					<h3 th:text="${completedCount}">0</h3>
+				</div>
+
+			</div>
+
+
+			<!-- FILTER -->
+
+			<div class="filter-row">
+
+				<input type="text" id="taskSearch" class="search-box" placeholder="Search task...">
+
+				<select id="projectFilter" class="filter-select">
+
+					<option value="">Project</option>
+
+					<option th:each="p : ${projects}" th:value="${p.projectName}" th:text="${p.projectName}"></option>
+
+				</select>
+
+
+				<select id="statusFilter" class="filter-select">
+
+					<option value="">Status</option>
+
+					<option value="Pending">Pending</option>
+					<option value="In Progress">In Progress</option>
+					<option value="Completed">Completed</option>
+
+				</select>
+
+				<button class="btn btn-search" id="searchBtn">Search</button>
+				<button class="btn btn-reset" id="resetBtn">Reset</button>
+
+			</div>
+
+
+			<!-- TABLE -->
+
+			<div class="table-wrapper">
+
+				<table id="taskTable" class="table task-table table-hover">
+
+					<thead>
+
+						<tr>
+							<th>#</th>
+							<th>Project</th>
+							<th>Module</th>
+							<th>Task</th>
+							<th>Assigned By</th>
+							<th>Assigned To</th>
+							<th>Due Date</th>
+							<th>Status</th>
+							<th>Priority</th>
+							<th>Action</th>
+						</tr>
+
+					</thead>
+
+					<tbody>
+
+						<tr th:each="task, iter : ${taskList}">
+
+							<td th:text="${iter.count}"></td>
+
+							<td>
+								<span class="tag project"
+									th:text="${task.project != null ? (task.project.projectName ?: 'N/A') : 'N/A'}"></span>
+							</td>
+
+							<td th:text="${task.module ?: 'N/A'}"></td>
+
+							<td>
+								<a th:href="@{'/taskassignment/taskDetails/' + ${task.id}}"
+									th:text="${task.taskDetails ?: 'N/A'}" class="task-link"></a>
+							</td>
+
+							<td th:text="${task.createdBy ?: 'N/A'}"></td>
+
+							<td th:text="${task.developer != null ? (task.developer.fullName ?: 'N/A') : 'N/A'}"></td>
+
+							<td
+								th:text="${task.dueDate != null ? #temporals.format(task.dueDate,'dd-MM-yyyy') : 'N/A'}">
+							</td>
+
+							<td>
+								<span class="badge status" th:classappend="${
+task.status == 0 ? ' pending' :
+task.status == 1 ? ' in-progress' :
+task.status == 2 ? ' completed' : ''
+}" th:text="${
+task.status == 0 ? 'Pending' :
+task.status == 1 ? 'In Progress' :
+task.status == 2 ? 'Completed' : 'N/A'
+}">
+								</span>
+							</td>
+
+							<td>
+								<span class="badge priority"
+									th:classappend="' ' + ${(task.priority != null ? task.priority.toLowerCase() : 'low')}"
+									th:text="${task.priority ?: 'N/A'}">
+								</span>
+							</td>
+
+							<td>
+
+								<a th:if="${task.id != null}" th:href="@{'/taskassignment/taskDetails/' + ${task.id}}">
+									<i class="bi bi-eye action-icon"></i>
+								</a>
+
+							</td>
+
+						</tr>
+
+					</tbody>
+
+				</table>
+
+			</div>
+
+			<p class="success-message" th:if="${message}" th:text="${message}"></p>
+
+		</main>
+
+	</div>
+	<!-- FOOTER BAR -->
+	<div class="footer-bar">
+
+	    <div class="footer-container">
+
+	        <div class="footer-item blue">
+	            <span>V-Smart</span>
+	            <i class="bi bi-arrow-right"></i>
+	        </div>
+
+	        <div class="footer-item orange">
+	            <span>OMP</span>
+	            <i class="bi bi-arrow-right"></i>
+	        </div>
+
+	        <div class="footer-item purple">
+	            <span>VERR</span>
+	            <i class="bi bi-arrow-right"></i>
+	        </div>
+
+	        <div class="footer-item darkblue">
+	            <span>Zing HR</span>
+	            <i class="bi bi-arrow-right"></i>
+	        </div>
+
+	        <div class="footer-item green">
+	            <span>Payroll</span>
+	            <i class="bi bi-arrow-right"></i>
+	        </div>
+
+	        <div class="footer-item indigo">
+	            <span>Tech Support</span>
+	            <i class="bi bi-arrow-right"></i>
+	        </div>
+
+	    </div>
+
+	</div>
+
+	<!-- SCRIPTS -->
+
+	<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+	<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+	<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+
+	<script>
+
+		$(document).ready(function () {
+
+			var table = $('#taskTable').DataTable({
+				pageLength: 5,
+				lengthMenu: [5, 10, 25, 50, 100]
+			});
+
+
+			$('#searchBtn').click(function () {
+
+				table.search($('#taskSearch').val()).draw();
+
+			});
+
+
+			$('#projectFilter').change(function () {
+
+				table.column(1).search(this.value).draw();
+
+			});
+
+
+			$('#statusFilter').change(function () {
+
+				table.column(7).search(this.value).draw();
+
+			});
+
+
+			$('#resetBtn').click(function () {
+
+				$('#taskSearch').val('');
+				$('#projectFilter').val('');
+				$('#statusFilter').val('');
+
+				table.search('').columns().search('').draw();
+
+			});
+
+		});
+
+		function toggleDropdown() {
+			const menu = document.getElementById("dropdownMenu");
+
+			if (menu.style.display === "flex") {
+				menu.style.display = "none";
+			} else {
+				menu.style.display = "flex";
+			}
+		}
+
+		function toggleTheme() {
+			document.body.classList.toggle("dark");
+
+			const icon = document.getElementById("themeIcon");
+
+			if (document.body.classList.contains("dark")) {
+				icon.classList.remove("fa-moon");
+				icon.classList.add("fa-sun");
+				localStorage.setItem("theme", "dark");
+			} else {
+				icon.classList.remove("fa-sun");
+				icon.classList.add("fa-moon");
+				localStorage.setItem("theme", "light");
+			}
+		}
+
+		// load saved theme
+		window.onload = function () {
+			const savedTheme = localStorage.getItem("theme");
+
+			if (savedTheme === "dark") {
+				document.body.classList.add("dark");
+				document.getElementById("themeIcon")
+					.classList.replace("fa-moon", "fa-sun");
+			}
+		}
+
+		function updateClock() {
+			const now = new Date();
+
+			const options = {
+				weekday: 'short',
+				day: '2-digit',
+				month: 'short',
+				year: 'numeric'
+			};
+
+			const datePart = now.toLocaleDateString('en-IN', options);
+
+			const timePart = now.toLocaleTimeString('en-IN', {
+				hour12: false
+			});
+
+			const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+			document.getElementById("liveClock").textContent =
+				`${datePart} ${timePart} ${timezone}`;
+		}
+
+		// update every second
+		setInterval(updateClock, 1000);
+
+		// run immediately on load
+		updateClock();
+
+		function toggleMenu(element) {
+			const parent = element.parentElement;
+
+			// close others (optional but looks professional)
+			document.querySelectorAll(".menu-item").forEach(item => {
+				if (item !== parent) {
+					item.classList.remove("open");
+				}
+			});
+
+			parent.classList.toggle("open");
+		}
+		
+		document.getElementById("globalSearch").addEventListener("keyup", function () {
+		    let value = this.value.toLowerCase();
+		    let rows = document.querySelectorAll(".task-table tbody tr");
+
+		    rows.forEach(row => {
+		        let text = row.innerText.toLowerCase();
+		        row.style.display = text.includes(value) ? "" : "none";
+		    });
+		});
+	</script>
+
 
 </body>
+
 </html>

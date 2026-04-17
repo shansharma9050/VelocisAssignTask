@@ -1,133 +1,199 @@
-/* Velocis - User Registration Styling */
-
+/* ------------------------------
+   GLOBAL THEME (SAME AS LOGIN)
+------------------------------ */
 body {
-    margin: 0;
-    font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
+	margin: 0;
+	font-family: "Segoe UI", Arial, sans-serif;
 
-    background-image: url("../images/Image1.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
+	background-image: url("../images/Image1.png");
+	background-size: cover;
+	background-position: center;
 
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+	min-height: 100vh;
+	position: relative;
 }
 
-/* Soft overlay for readability */
+/* Overlay (same theme) */
 body::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: rgba(255, 255, 255, 0.65);
-    z-index: 0;
+	content: "";
+	position: fixed;
+	inset: 0;
+	background: rgba(255, 255, 255, 0.6);
+	z-index: 0;
+	pointer-events: none;
 }
 
-/* ------------------------------------------------ */
-
+/* ------------------------------
+   WRAPPER
+------------------------------ */
 .register-wrapper {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    z-index: 1;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start; /* 👈 important change */
+	padding: 50px 20px;
 }
 
+/* ------------------------------
+   CARD (BIGGER + PROFESSIONAL)
+------------------------------ */
 .register-card {
-    background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
-    padding: 40px 50px;
-    width: 400px;
-    text-align: left;
-    animation: fadeIn 0.8s ease-in-out;
+	width: 100%;
+	max-width: 700px; /* 👈 bigger than login */
+
+	background: #ffffff;
+	padding: 40px;
+	border-radius: 16px;
+
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+
+	position: relative;
+	z-index: 1;
 }
 
-/* ------------------------------------------------ */
+/* ------------------------------
+   HEADER
+------------------------------ */
+.logo-container {
+	text-align: center;
+	margin-bottom: 10px;
+}
 
-.logo-container .logo {
-    width: 130px;
-    height: auto;
+.logo {
+	width: 140px;
 }
 
 h2 {
-    color: #004C91;
-    font-weight: 600;
-    font-size: 1.8em;
-    text-align: center;
+	text-align: center;
+	font-size: 24px;
+	font-weight: 600;
+	color: #2d3748;
+	margin-top: 10px;
 }
 
 .subtitle {
-    color: #5a6a7a;
-    text-align: center;
-    font-size: 0.95em;
-    margin-bottom: 25px;
+	text-align: center;
+	color: #666;
+	font-size: 14px;
+	margin-bottom: 25px;
 }
 
+/* ------------------------------
+   SECTION DIVIDER
+------------------------------ */
+.form-section {
+	margin-bottom: 20px;
+}
+
+.form-section-title {
+	font-size: 14px;
+	font-weight: 600;
+	color: #2563eb;
+	margin-bottom: 10px;
+	border-left: 3px solid #2563eb;
+	padding-left: 8px;
+}
+
+/* ------------------------------
+   GRID LAYOUT
+------------------------------ */
+.form-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 18px;
+}
+
+.full-width {
+	grid-column: span 2;
+}
+
+/* ------------------------------
+   INPUTS
+------------------------------ */
 .form-label {
-    color: #004C91;
-    font-weight: 500;
-    font-size: 0.9em;
+	font-size: 13px;
+	font-weight: 500;
+	color: #444;
+	margin-bottom: 5px;
 }
 
 .form-control,
 .form-select {
-    background-color: #f9fbfd;
-    border: 1px solid #cfd8e3;
-    border-radius: 8px;
-    font-size: 0.95em;
-    padding: 10px 12px;
-    transition: 0.3s;
+	width: 100%;
+	padding: 12px;
+	border: 1px solid #cfd7e2;
+	border-radius: 8px;
+	font-size: 14px;
+	transition: all 0.2s ease;
 }
 
 .form-control:focus,
 .form-select:focus {
-    border-color: #00ADEF;
-    box-shadow: 0 0 6px rgba(0, 173, 239, 0.3);
-    outline: none;
+	border-color: #2563eb;
+	box-shadow: 0 0 5px rgba(37, 99, 235, 0.3);
+	outline: none;
 }
 
+/* Phone group */
+.input-group .form-select {
+	max-width: 110px;
+}
+
+/* ------------------------------
+   BUTTON
+------------------------------ */
 .btn-register {
-    background-color: #004C91;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 12px;
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
+	width: 100%;
+	padding: 13px;
+	border: none;
+
+	background: linear-gradient(135deg, #2563eb, #1e40af);
+	color: #fff;
+
+	font-size: 16px;
+	font-weight: 600;
+
+	border-radius: 10px;
+	cursor: pointer;
+	transition: 0.3s;
 }
 
 .btn-register:hover {
-    background-color: #003A73;
+	transform: translateY(-1px);
+	box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
 }
 
+/* ------------------------------
+   STATUS TEXT
+------------------------------ */
+#emailStatusId {
+	font-size: 13px;
+	margin-top: 5px;
+	display: block;
+}
+
+/* ------------------------------
+   ALERTS
+------------------------------ */
 .alert {
-    font-size: 0.9em;
-    text-align: center;
+	font-size: 14px;
+	margin-top: 15px;
+	border-radius: 8px;
 }
 
-/* ------------------------------------------------ */
+/* ------------------------------
+   MOBILE
+------------------------------ */
+@media (max-width: 768px) {
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+	.register-card {
+		padding: 25px;
+	}
 
-/* ------------------------------------------------
-   MOBILE OPTIMIZATION
------------------------------------------------- */
-@media (max-width: 480px) {
-    body::before {
-        display: none;
-    }
+	.form-grid {
+		grid-template-columns: 1fr;
+	}
 
-    .register-card {
-        width: 90%;
-        padding: 30px 25px;
-    }
+	.full-width {
+		grid-column: span 1;
+	}
 }

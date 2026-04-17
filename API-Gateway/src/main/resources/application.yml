@@ -7,23 +7,37 @@ spring:
 
   cloud:
     gateway:
-      routes:
-        - id: ASSIGNMENTOFFICE
-          uri: lb://AssignmentOffice
-          predicates:
-            - Path=/taskassignment/**
-          
-        - id: spbootpro
-          uri: lb://SPBootPro
-          predicates:
-            - Path=/contra/**  
+      server:
+        webflux:
+          forwarded:
+            enabled: true
+          routes:
+            - id: assignmentoffice
+              uri: lb://ASSIGNMENTOFFICE
+              predicates:
+                - Path=/taskassignment/**,/home/**,/task_assignment.css,/assignedTask.css,/viewTask.css,/project.css,/myProfile.css,/developer.css,/images/**,/js/**
+
+            - id: spbootpro
+              uri: lb://SPBOOTPRO
+              predicates:
+                - Path=/contra/**,/api/**,/logout,/registereduser,/registeredUser.css
+
+            - id: messageservice
+              uri: lb://MESSAGESERVICE
+              predicates:
+                - Path=/message/**,/chat/**,/sockjs/**
+                
+            - id: dashboardservice
+              uri: lb://DASHBOARDSERVICE
+              predicates:
+                - Path=/dash/**,/dashboard.css
 
 eureka:
   instance:
     prefer-ip-address: true
 
   client:
-    fetch-registry: true
     register-with-eureka: true
+    fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka

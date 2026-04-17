@@ -1,7 +1,5 @@
 package com.example.demo.repository;
 
-
-
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,11 +12,6 @@ import com.example.demo.assignmentofice.model.AssignmentOfficeModel;
 @Repository
 public interface AssignmentOfficeRepository extends JpaRepository<AssignmentOfficeModel, Long> {
 
-	/*
-	 * @Query( value = "SELECT * FROM tasks WHERE status = :status", nativeQuery =
-	 * true ) List<AssignmentOfficeModel> findTasksByStatusNative(@Param("status")
-	 * String status);
-	 */
-	
-
+	@Query(value = "SELECT * FROM assignment_office WHERE developer_id = :developerId",nativeQuery = true)
+	List<AssignmentOfficeModel> findByDeveloperId(@Param("developerId") String developerId);
 }

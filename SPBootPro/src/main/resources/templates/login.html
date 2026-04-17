@@ -4,62 +4,98 @@
     <meta charset="UTF-8">
     <title>Velocis Login Portal</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	
+
     <link href="/loginStyle.css" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
+
 <body>
-    <form class="login-container" th:action="@{/login}" method="post">
-        <!-- Logo Section -->
-		<div class="logo-container">
-		           <img th:src="@{/images/velocis-logo.png}" alt="Velocis Logo" class="logo">
-		       </div>
+	<div class="page-wrapper">
+<form class="login-container" th:action="@{/login}" method="post">
 
-        <h2>Sign In</h2>
+    <!-- Logo -->
+    <div class="logo-container">
+        <img th:src="@{/images/velocis-logo.png}" alt="Velocis Logo" class="logo">
+    </div>
 
-        <!-- Message Display -->
-        <p class="success-message" th:if="${message}" th:text="${message}"></p>
-        <p class="error-message" th:if="${error}" th:text="${error}"></p>
+    <h2>Sign In</h2>
 
-        <div th:if="${param.error}" class="error-message">
-            Invalid username or password
+    <!-- Messages -->
+    <p class="success-message" th:if="${message}" th:text="${message}"></p>
+    <p class="error-message" th:if="${error}" th:text="${error}"></p>
+
+	<div th:if="${param.error != null}" class="error-message">
+	    Invalid username or password
+	</div>
+
+    <div th:if="${param.logout}" class="info-message">
+        You have been logged out successfully.
+    </div>
+
+    <!-- Username -->
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username1"
+               th:value="${username}" placeholder="Enter username" disabled />
+        <input type="hidden" name="username" th:value="${username}">
+    </div>
+
+    <!-- Password -->
+    <div class="form-group">
+        <label>Password</label>
+
+        <div class="password-wrapper">
+            <input type="password"
+                   id="password"
+                   name="password"
+                   placeholder="Enter password"
+                   required>
+
+            <span class="toggle-password" onclick="togglePassword()">
+                <i id="eyeIcon" class="fa-solid fa-eye"></i>
+            </span>
         </div>
+    </div>
+	<div class="text-end mt-2">
+	    <a th:href="@{/forgot-password/{email}(email=${email})}" class="forgot-link">
+	        Forgot Password?
+	    </a>
+	</div>
+    <!-- CAPTCHA -->
+    <div class="form-group captcha-group">
+        <div class="g-recaptcha"
+             data-sitekey="6LeHwo8sAAAAABvNIaopG8nptYqVgnU_mX1dHDBY"></div>
+    </div>
 
-        <div th:if="${param.logout}" class="info-message">
-            You have been logged out successfully.
-        </div>
+	<div th:if="${param.captchaError}" class="error-message captcha-error">
+	    Please verify CAPTCHA
+	</div>
 
-        <!-- Input Fields -->
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" placeholder="Enter username" required />
-        </div>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="Enter password" required />
-        </div>
+    <!-- Login Button -->
+    <button type="submit" class="btn-login">Login</button>
 
-        <button type="submit" class="btn-login">Login</button>
-
-        <div class="form-footer">
-            <a href="/contra/act">Create an Account</a>
-        </div>
-
-        <!-- Social Buttons -->
-        <ul class="social-login">
-            <li>
-                <button type="button" class="social-btn">
-                    <img src="https://id-frontend.prod-east.frontend.public.atl-paas.net/assets/google-logo.5867462c.svg" alt="Google">
-                    Continue with Google
-                </button>
-            </li>
-            <li>
-                <button type="button" class="social-btn">
-                    <img src="https://id-frontend.prod-east.frontend.public.atl-paas.net/assets/microsoft-logo.c73d8dca.svg" alt="Microsoft">
-                    Continue with Microsoft
-                </button>
-            </li>
-        </ul>
-    </form>
+</form>
+</div>
 </body>
+
+<script>
+function togglePassword() {
+    const password = document.getElementById("password");
+    const icon = document.getElementById("eyeIcon");
+
+    if (password.type === "password") {
+        password.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    } else {
+        password.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    }
+}
+</script>
+
 </html>

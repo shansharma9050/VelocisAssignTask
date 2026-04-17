@@ -1,0 +1,45 @@
+package com.example.messageService;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.example.JwtAuthFilter;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    private final JwtAuthFilter jwtAuthFilter;
+
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
+        this.jwtAuthFilter = jwtAuthFilter;
+    }
+
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity security) throws Exception {
+
+        security
+            .csrf(csrf -> csrf.disable())
+            .formLogin(form -> form.disable())  
+            .httpBasic(basic -> basic.disable())
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers(
+                            "/message/**",
+                            "/chat/**",
+                            "/chat",
+                            "/chat/info",
+                            "/sockjs/**",
+                            "/**.css",
+                            "/**.js"
+                    ).permitAll()
+                    .anyRequest().authenticated()
+            )
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return security.build();
+    }
+}
