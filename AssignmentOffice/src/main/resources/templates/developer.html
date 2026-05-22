@@ -57,7 +57,8 @@
 
 		<ul>
 
-			<li><a th:href="@{/dash/dashboard}"><i class="bi bi-columns-gap"></i> Dashboard</a>
+			<li><a th:href="@{/dash/dashboard}"><i class="bi bi-columns-gap"></i> Dashboard</a></li>
+			<li><a th:href="@{/taskassignment/main_dashboard}"><i class="bi bi-columns-gap"></i>Tracker Dashboard</a></li>
 			<li sec:authorize="hasAuthority('ROLE_ADMIN')">
 				<a th:href="@{/registereduser}">
 					<i class="bi bi-file-earmark-text"></i> User Application
@@ -71,7 +72,7 @@
 				</div>
 				<ul class="submenu">
 					<li>
-						<a href="#">
+						<a th:href="@{/taskassignment/project_management}">
 							<i class="bi bi-kanban"></i> Project Management
 						</a>
 					</li>
@@ -331,6 +332,20 @@
 
 		// run immediately on load
 		updateClock();
+		
+		const searchInput = document.getElementById("globalSearch");
+
+		if (searchInput) {
+		    searchInput.addEventListener("keyup", function () {
+		        let value = this.value.toLowerCase();
+		        let rows = document.querySelectorAll(".task-table tbody tr");
+
+		        rows.forEach(row => {
+		            let text = row.innerText.toLowerCase();
+		            row.style.display = text.includes(value) ? "" : "none";
+		        });
+		    });
+		}
 	</script>
 </body>
 

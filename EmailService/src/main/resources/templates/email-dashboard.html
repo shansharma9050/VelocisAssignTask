@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Service</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/email-style.css}">
+</head>
+
+<body>
+
+<div class="gmail-shell">
+
+    <header class="topbar">
+        <div class="brand">
+            <i class="fa-solid fa-bars"></i>
+            <div class="mail-logo">
+                <i class="fa-solid fa-envelope"></i>
+            </div>
+            <h4>Email</h4>
+        </div>
+
+        <form class="search-mail" th:action="@{/dashboard/email/search}" method="get">
+            <i class="fa fa-search"></i>
+            <input name="keyword" placeholder="Search mail">
+        </form>
+
+        <div class="profile">
+            <span th:text="${username}">user@mail.com</span>
+            <div class="avatar">
+                <i class="fa fa-user"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="mail-layout">
+
+        <aside class="sidebar">
+            <button class="compose-btn" data-bs-toggle="modal" data-bs-target="#composeModal">
+                <i class="fa fa-pen"></i>
+                Compose
+            </button>
+
+            <a th:href="@{/dashboard/email}" th:classappend="${activeFolder == 'inbox'} ? 'active'">
+                <i class="fa fa-inbox"></i> Inbox
+            </a>
+
+            <a th:href="@{/dashboard/email/starred}" th:classappend="${activeFolder == 'starred'} ? 'active'">
+                <i class="fa fa-star"></i> Starred
+            </a>
+
+            <a th:href="@{/dashboard/email/sent}" th:classappend="${activeFolder == 'sent'} ? 'active'">
+                <i class="fa fa-paper-plane"></i> Sent
+            </a>
+
+            <a th:href="@{/dashboard/email/drafts}" th:classappend="${activeFolder == 'drafts'} ? 'active'">
+                <i class="fa fa-file"></i> Drafts
+            </a>
+
+            <a th:href="@{/dashboard/email/archived}" th:classappend="${activeFolder == 'archived'} ? 'active'">
+                <i class="fa fa-box-archive"></i> Archive
+            </a>
+
+            <a th:href="@{/dashboard/email/trash}" th:classappend="${activeFolder == 'trash'} ? 'active'">
+                <i class="fa fa-trash"></i> Trash
+            </a>
+        </aside>
+
+        <section class="message-list">
+
+            <div class="list-toolbar">
+                <h5 th:text="${#strings.capitalize(activeFolder)}">Inbox</h5>
+                <span th:text="${#lists.size(emails)} + ' messages'">0 messages</span>
+            </div>
+
+            <div th:if="${#lists.isEmpty(emails)}" class="empty-box">
+                <i class="fa-regular fa-envelope-open"></i>
+                <h6>No mail here</h6>
+                <p>Your messages will appear in this folder.</p>
+            </div>
+
+            <a class="message-row"
+               th:each="mail : ${emails}"
+               th:href="@{/dashboard/email/view/{id}(id=${mail.id})}"
+               th:classappend="${selectedMail != null and selectedMail.id == mail.id} ? 'selected' : ''">
+
+                <div class="row-main">
+                    <form th:action="@{/dashboard/email/{id}/star(id=${mail.id})}" method="post">
+                        <button type="submit" class="star-btn">
+                            <i th:class="${mail.starred} ? 'fa-solid fa-star active-star' : 'fa-regular fa-star'"></i>
+                        </button>
+                    </form>
+
+                    <div class="sender"
+                         th:text="${activeFolder == 'sent' ? mail.receiverEmail : mail.senderEmail}">
+                        admin@mail.com
+                    </div>
+
+                    <div class="subject-line">
+                        <strong th:text="${mail.subject}">Subject</strong>
+                        <span th:text="${' - ' + #strings.abbreviate(mail.body, 80)}"> preview</span>
+                    </div>
+
+                    <time th:text="${#temporals.format(mail.createdAt, 'dd MMM')}">19 May</time>
+                </div>
+            </a>
+        </section>
+
+        <section class="preview">
+
+            <div th:if="${selectedMail == null}" class="preview-empty">
+                <i class="fa-regular fa-message"></i>
+                <h5>Select a message</h5>
+                <p>Choose an email from the list to preview it here.</p>
+            </div>
+
+            <div th:if="${selectedMail != null}">
+                <div class="preview-header">
+                    <div>
+                        <h2 th:text="${selectedMail.subject}">Project Update</h2>
+                        <p>
+                            From <strong th:text="${selectedMail.senderEmail}"></strong>
+                            to <strong th:text="${selectedMail.receiverEmail}"></strong>
+                        </p>
+                    </div>
+
+                    <div class="actions">
+                        <form th:action="@{/dashboard/email/{id}/archive(id=${selectedMail.id})}" method="post">
+                            <button title="Archive">
+                                <i class="fa fa-box-archive"></i>
+                            </button>
+                        </form>
+
+                        <form th:action="@{/dashboard/email/{id}/trash(id=${selectedMail.id})}" method="post">
+                            <button title="Delete">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="mail-meta">
+                    <span th:text="${#temporals.format(selectedMail.createdAt, 'dd MMM yyyy, hh:mm a')}"></span>
+                </div>
+
+                <hr>
+
+                <article class="mail-content" th:text="${selectedMail.body}">
+                    Mail body
+                </article>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<div class="modal fade" id="composeModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content compose-window">
+
+            <div class="compose-title">
+                <span>New Message</span>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post">
+                <div class="compose-body">
+                    <input name="receiverEmail" type="email" placeholder="Recipients" required>
+                    <input name="subject" placeholder="Subject" required>
+                    <textarea name="body" rows="10" placeholder="Write your message..." required></textarea>
+                </div>
+
+                <div class="compose-footer">
+                    <button type="submit" th:formaction="@{/dashboard/email/send}" class="send-btn">
+                        <i class="fa fa-paper-plane"></i>
+                        Send
+                    </button>
+
+                    <button type="submit" th:formaction="@{/dashboard/email/draft}" class="draft-btn">
+                        Save Draft
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/email.js}"></script>
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+	    const searchInput = document.querySelector(".search-mail input");
+
+	    if (searchInput) {
+	        searchInput.addEventListener("keydown", function (event) {
+	            if (event.key === "Escape") {
+	                searchInput.value = "";
+	            }
+	        });
+	    }
+	});
+</script>
+</body>
+</html>

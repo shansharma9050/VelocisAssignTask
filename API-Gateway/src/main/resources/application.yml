@@ -15,7 +15,7 @@ spring:
             - id: assignmentoffice
               uri: lb://ASSIGNMENTOFFICE
               predicates:
-                - Path=/taskassignment/**,/home/**,/task_assignment.css,/assignedTask.css,/viewTask.css,/project.css,/myProfile.css,/developer.css,/images/**,/js/**
+                - Path=/taskassignment/**,/home/**,/task_assignment.css,/assignedTask.css,/viewTask.css,/project.css,/weekly_planner.css,/weekly_report.css,/myProfile.css,/developer.css,/main_dashboard.css,/project_management.css,/images/**,/js/**
 
             - id: spbootpro
               uri: lb://SPBOOTPRO
@@ -32,6 +32,11 @@ spring:
               predicates:
                 - Path=/dash/**,/dashboard.css
 
+
+            - id: email-service
+              uri: lb://EMAIL-SERVICE
+              predicates:
+               - Path=/email/**,/dashboard/**
 eureka:
   instance:
     prefer-ip-address: true

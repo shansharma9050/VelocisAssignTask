@@ -1,0 +1,23 @@
+<form th:action="@{/email/send}"
+      method="post">
+
+    <input type="email"
+           name="receiverEmail"
+           class="form-control mb-3"
+           placeholder="To">
+
+    <input type="text"
+           name="subject"
+           class="form-control mb-3"
+           placeholder="Subject">
+
+    <textarea rows="8"
+              name="body"
+              class="form-control">
+    </textarea>
+
+    <button class="btn btn-primary mt-3">
+        Send
+    </button>
+
+</form>

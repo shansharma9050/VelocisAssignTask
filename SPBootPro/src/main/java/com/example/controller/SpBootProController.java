@@ -3,15 +3,12 @@ import org.springframework.web.client.RestTemplate;
 
 import com.example.model.LoginModel;
 import com.example.model.common.model.SpBootProModel;
+import com.example.model.repository.SpBootProRepository;
 import com.example.repository.LoginRepository;
-import com.example.repository.SpBootProRepository;
 import com.example.restcontroller.SpBootProRestController;
 
 import java.security.SecureRandom;
 import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -24,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
 @Controller
@@ -90,6 +88,16 @@ public class SpBootProController {
 	    model.addAttribute("user", user);
 
 	    return "userDetails";
+
+	}
+	
+	@GetMapping("/getDevelopers")
+	@ResponseBody
+	public SpBootProModel getDevelopers(@RequestParam("id") Long id) {
+
+	    SpBootProModel user = spBootProRestController.getUserById(id);
+
+	    return user;
 
 	}
 	

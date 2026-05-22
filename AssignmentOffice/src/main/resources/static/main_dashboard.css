@@ -1,0 +1,613 @@
+/* ================= GLOBAL ================= */
+body {
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    background: #f4f6fa;
+    color: #2c3e50;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* ================= TOP NAVBAR ================= */
+.top-navbar {
+    height: 70px;
+    background: #f8f9fc;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 30px;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+}
+
+/* CLOCK */
+.live-clock {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #f1f1f1;
+    padding: 8px 18px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* SEARCH */
+.top-search {
+    position: absolute;
+    left: 280px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    padding: 8px 15px;
+    width: 280px;
+}
+
+.top-search input {
+    border: none;
+    outline: none;
+    width: 100%;
+}
+
+/* USER */
+.user-dropdown {
+    position: relative;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.user-name {
+    font-weight: 600;
+}
+
+.user-role {
+    font-size: 12px;
+    color: #888;
+}
+
+/* DROPDOWN */
+.dropdown-menu {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 220px;
+    background: #fff;
+    border-radius: 8px;
+    display: none;
+    flex-direction: column;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.dropdown-menu a {
+    padding: 12px;
+    color: #333;
+}
+
+.dropdown-menu a:hover {
+    background: #f3f4f6;
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar {
+    width: 240px;
+    background: #ffffff;
+    padding: 20px 0;
+    height: 100vh;
+    overflow-y: auto; /* ✅ FIX */
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #e5e5e5;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+/* Scrollbar */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+.sidebar .logo {
+    width: 140px;
+    margin: 0 auto 25px auto;
+    display: block;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0 20px;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+    color: #333;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: background 0.2s ease-in-out;
+}
+
+.sidebar ul li a i {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li.active a {
+    background: #e6f0ff;
+    color: #0b5ed7;
+    font-weight: 600;
+}
+
+/* ------------------------------
+   COLLAPSIBLE MENU
+------------------------------ */
+.menu-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    color: #333;
+    transition: background 0.2s;
+}
+
+.menu-title:hover {
+    background: #e6f0ff;
+    color: #0b5ed7;
+    font-weight: 600;
+}
+
+/* Hidden by default */
+.submenu {
+    display: none;
+    padding-left: 20px;
+    margin-top: 5px;
+}
+
+/* Show when open */
+.menu-item.open > .submenu {
+    display: block;
+}
+
+/* Arrow rotation */
+.arrow {
+    font-size: 14px;
+    transition: transform 0.3s ease;
+}
+
+.menu-item.open > .menu-title .arrow {
+    transform: rotate(90deg);
+}
+
+.submenu li {
+    margin-bottom: 5px;
+}
+
+.submenu li a {
+    font-size: 14px;
+    padding: 10px 14px;
+    color: #555;
+}
+
+/* ===============================
+   COLORFUL PROFESSIONAL ICONS
+=============================== */
+
+/* Default icon styling */
+.sidebar i {
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+/* Dashboard */
+.sidebar .bi-columns-gap,
+.sidebar .bi-speedometer2 {
+    color: #4e73df; /* blue */
+}
+
+/* New Dashboard */
+.sidebar .bi-plus-circle {
+    color: #1cc88a; /* green */
+}
+
+/* Projects */
+.sidebar .bi-folder {
+    color: #f6c23e; /* yellow */
+}
+
+/* Project Management */
+.sidebar .bi-kanban {
+    color: #36b9cc; /* cyan */
+}
+
+/* Add Project */
+.sidebar .bi-folder-plus {
+    color: #20c997; /* teal */
+}
+
+/* Bugs */
+.sidebar .bi-bug {
+    color: #e74a3b; /* red */
+}
+
+/* Task */
+.sidebar .bi-list-task {
+    color: #6f42c1; /* purple */
+}
+
+/* Weekly Planner */
+.sidebar .bi-calendar-week {
+    color: #fd7e14; /* orange */
+}
+
+/* Helpdesk */
+.sidebar .bi-headset {
+    color: #0dcaf0; /* light blue */
+}
+
+/* Meetings */
+.sidebar .bi-people {
+    color: #198754; /* dark green */
+}
+
+/* Letters */
+.sidebar .bi-envelope {
+    color: #6610f2; /* violet */
+}
+
+/* Training */
+.sidebar .bi-mortarboard {
+    color: #d63384; /* pink */
+}
+
+/* Knowledge */
+.sidebar .bi-journal {
+    color: #0d6efd; /* primary blue */
+}
+
+/* Announcements */
+.sidebar .bi-megaphone {
+    color: #ffc107; /* amber */
+}
+
+/* Survey */
+.sidebar .bi-ui-checks {
+    color: #198754;
+}
+
+/* Documents */
+.sidebar .bi-cloud {
+    color: #6c757d;
+}
+
+/* Videos */
+.sidebar .bi-camera-video {
+    color: #e83e8c;
+}
+
+/* Webinars */
+.sidebar .bi-broadcast {
+    color: #20c997;
+}
+
+/* Incidents */
+.sidebar .bi-exclamation-triangle {
+    color: #dc3545;
+}
+
+/* Profile */
+.sidebar .bi-person {
+    color: #495057;
+}
+
+.sidebar .bi-file-earmark-text {
+    color: #0d6efd; /* primary blue */
+}
+
+/* Logout */
+.sidebar .bi-box-arrow-right {
+    color: #dc3545;
+}
+
+/* Hover effect (professional highlight) */
+.sidebar ul li a:hover i {
+    transform: scale(1.15);
+    filter: brightness(1.2);
+}
+
+/* Active menu icon */
+.sidebar ul li.active a i {
+    filter: brightness(1.3);
+}
+/* ================= MAIN CONTENT ================= */
+.main-content {
+    margin-left: 240px;
+    padding: 30px;
+    padding-bottom: 120px;
+}
+
+.page-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #123c7b;
+}
+
+/* ================= DASHBOARD GRID ================= */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* ================= CARD ================= */
+.card {
+    background: #fff;
+    padding: 18px;
+    border-radius: 12px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.view-all {
+    font-size: 12px;
+    color: #0d6efd;
+    cursor: pointer;
+}
+
+/* ================= TABLE ================= */
+.task-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.task-table th,
+.task-table td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* ================= NO DATA ================= */
+.no-data {
+    background: #f8d7da;
+    padding: 10px;
+    border-radius: 6px;
+    color: #842029;
+    font-size: 13px;
+}
+
+/* ================= QUICK LINKS ================= */
+.quick-links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.quick-card {
+    padding: 20px;
+    border-radius: 10px;
+    color: #fff;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* COLORS */
+.quick-card.blue { background: #3b82f6; }
+.quick-card.orange { background: #ff5e3a; }
+.quick-card.purple { background: #7c3aed; }
+.quick-card.darkblue { background: #1e3a8a; }
+.quick-card.green { background: #059669; }
+.quick-card.teal { background: #14b8a6; }
+
+/* ================= FORM ================= */
+textarea,
+select {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.btn-submit {
+    margin-top: 10px;
+    background: #0d6efd;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* ================= FOOTER ================= */
+.footer-bar {
+   position: fixed;
+    bottom: 0;
+    left: 240px;
+    width: calc(100% - 240px);
+
+    background: #f8f9fc;
+    padding: 18px 30px;
+
+    display: flex;
+    gap: 20px;
+    justify-content: flex-start;
+    align-items: center;
+
+    overflow-x: auto;
+    border-top: 1px solid #e5e7eb;
+    z-index: 999;
+}
+
+
+/* ===============================
+   FOOTER CARDS (WIDER LIKE IMAGE)
+=============================== */
+.footer-item {
+    flex: 1; /* equal width */
+    min-width: 200px;
+    max-width: 250px;
+
+    height: 50px;
+    padding: 0 22px;
+
+    border-radius: 12px;
+
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    cursor: pointer;
+     position: relative;
+    overflow: hidden;
+    transition: all 0.35s ease;
+}
+
+/* Icon */
+.footer-item i {
+    font-size: 18px;
+}
+
+/* Hover */
+.footer-item:hover {
+    transform: translateY(-6px) scale(1.02);
+
+    box-shadow: 
+        0 10px 25px rgba(0,0,0,0.2),
+        0 0 15px rgba(255,255,255,0.2) inset;
+
+    filter: brightness(1.1);
+}
+
+.footer-item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,0.4),
+        transparent
+    );
+
+    transition: 0.6s;
+}
+
+/* shine moves on hover */
+.footer-item:hover::before {
+    left: 100%;
+}
+
+
+.footer-item span {
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: transform 0.3s ease;
+}
+
+.footer-item i {
+    color: rgba(255,255,255,0.9);
+    transition: transform 0.3s ease;
+}
+
+.footer-item:hover span {
+    color: #ffffff;
+    transform: translateX(2px);
+}
+
+.footer-item:hover i {
+     transform: translateX(6px);
+    
+}
+/* ===============================
+   COLORS
+=============================== */
+.footer-item.blue {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+}
+
+.footer-item.orange {
+    background: linear-gradient(135deg, #ff5e3a, #ff7e5f);
+}
+
+.footer-item.purple {
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+}
+
+.footer-item.darkblue {
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+}
+
+.footer-item.green {
+    background: linear-gradient(135deg, #059669, #10b981);
+}
+
+.footer-item.indigo {
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .main-content {
+        margin-left: 200px;
+    }
+
+    .footer-bar {
+        left: 200px;
+        width: calc(100% - 200px);
+    }
+}

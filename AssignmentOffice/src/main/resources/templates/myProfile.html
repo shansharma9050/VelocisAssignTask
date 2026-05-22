@@ -27,8 +27,8 @@
 			<i id="themeIcon" class="fa-solid fa-moon"></i>
 		</div>
 		<div class="top-search">
-		    <i class="bi bi-search"></i>
-		    <input type="text" placeholder="Search tasks, projects..." id="globalSearch">
+			<i class="bi bi-search"></i>
+			<input type="text" placeholder="Search tasks, projects..." id="globalSearch">
 		</div>
 		<div class="user-dropdown">
 
@@ -68,7 +68,9 @@
 		<ul>
 
 			<li><a th:href="@{/dash/dashboard}"><i class="bi bi-columns-gap"></i> Dashboard</a>
-			<li sec:authorize="hasAuthority('ROLE_ADMIN')">
+			<li><a th:href="@{/taskassignment/main_dashboard}"><i class="bi bi-columns-gap"></i>Tracker Dashboard</a>
+			</li>
+			<li class="active" sec:authorize="hasAuthority('ROLE_ADMIN')">
 				<a th:href="@{/registereduser}">
 					<i class="bi bi-file-earmark-text"></i> User Application
 				</a>
@@ -81,7 +83,7 @@
 				</div>
 				<ul class="submenu">
 					<li>
-						<a href="#">
+						<a th:href="@{/taskassignment/project_management}">
 							<i class="bi bi-kanban"></i> Project Management
 						</a>
 					</li>
@@ -100,19 +102,39 @@
 
 					<li><a th:href="@{/taskassignment/assignTask}"><i class="bi bi-plus-circle"></i>
 							Create Task</a></li>
-
-
 					<li>
 						<a th:href="@{/taskassignment/assignedTask}">
 							<i class="bi bi-list-check"></i> All Tasks
 						</a>
 					</li>
-
-
+					<li>
+						<a th:href="@{/taskassignment/myProfile}">
+							<i class="bi bi-list-check"></i> My Tasks
+						</a>
+					</li>
 				</ul>
 			</li>
 
-			<li><a href="#"><i class="bi bi-calendar-week"></i> Weekly Planner</a></li>
+			<li class="menu-item">
+				<div class="menu-title" onclick="toggleMenu(this)">
+					<span><i class="bi bi-calendar-week"></i> Weekly Planner</span>
+					<i class="bi bi-chevron-right arrow"></i>
+				</div>
+				<ul class="submenu">
+
+					<li>
+						<a th:href="@{/taskassignment/weekly_report}">
+							<i class="bi bi-bar-chart-line"></i> Weekly Report
+						</a>
+					</li>
+
+					<li>
+						<a th:href="@{/taskassignment/assignedTask}">
+							<i class="bi bi-calendar-week"></i> Weekly Calendar
+						</a>
+					</li>
+				</ul>
+			</li>
 			<li>
 				<a href="#"><i class="bi bi-bug"></i> Bugs</a>
 			</li>
@@ -160,8 +182,7 @@
 			<li><a href="#"><i class="bi bi-broadcast"></i> Webinars</a></li>
 			<li><a href="#"><i class="bi bi-exclamation-triangle"></i> Incidents</a></li>
 
-			<li class="active"><a th:href="@{/taskassignment/myProfile}"><i class="bi bi-person"></i> My Profile</a>
-			</li>
+			<li><a th:href="@{/taskassignment/myProfile}"><i class="bi bi-person"></i> My Profile</a></li>
 			<li><a th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
 
 		</ul>
@@ -208,10 +229,10 @@
 		<!-- MY TASKS -->
 		<div class="info-section">
 
-			<div class="info-box" style="width:100%">
+			<div class="info-box table-wrapper" style="width:100%">
 				<h3 style="margin-bottom:15px;">My Assigned Tasks</h3>
 
-				<table id="taskTable" class="table table-hover table-bordered align-middle" style="width:100%">
+				<table id="taskTable" class="table task-table table-hover">
 
 					<thead class="table-primary">
 						<tr>
@@ -262,39 +283,38 @@ task.status == 1 ? 'In Progress' :
 	<!-- FOOTER BAR -->
 	<div class="footer-bar">
 
-	    <div class="footer-container">
+		<a href="https://vsmart.velocis.in/" class="footer-item blue">
+			<span>V-Smart</span>
+			<i class="bi bi-arrow-right"></i>
+		</a>
 
-	        <div class="footer-item blue">
-	            <span>V-Smart</span>
-	            <i class="bi bi-arrow-right"></i>
-	        </div>
+		<a href="https://omportal.velocis.in/" class="footer-item orange">
+			<span>OMP</span>
+			<i class="bi bi-arrow-right"></i>
+		</a>
 
-	        <div class="footer-item orange">
-	            <span>OMP</span>
-	            <i class="bi bi-arrow-right"></i>
-	        </div>
+		<a href="https://verr.velocis.in/dataRepository/" class="footer-item purple">
+			<span>VERR</span>
+			<i class="bi bi-arrow-right"></i>
+		</a>
 
-	        <div class="footer-item purple">
-	            <span>VERR</span>
-	            <i class="bi bi-arrow-right"></i>
-	        </div>
+		<a href="https://portal.zinghr.com/2015/pages/authentication/Velocis.htm" class="footer-item darkblue">
+			<span>Zing HR</span>
+			<i class="bi bi-arrow-right"></i>
+		</a>
 
-	        <div class="footer-item darkblue">
-	            <span>Zing HR</span>
-	            <i class="bi bi-arrow-right"></i>
-	        </div>
+		<a href="https://payroll.velocis.in/EasyPAY/view/loginmain.aspx" class="footer-item green">
 
-	        <div class="footer-item green">
-	            <span>Payroll</span>
-	            <i class="bi bi-arrow-right"></i>
-	        </div>
+			<span>Payroll</span>
+			<i class="bi bi-arrow-right"></i>
+		</a>
 
-	        <div class="footer-item indigo">
-	            <span>Tech Support</span>
-	            <i class="bi bi-arrow-right"></i>
-	        </div>
+		<a href="https://staging7.velocis.in/techsupport" class="footer-item indigo">
+			<span>Tech Support</span>
+			<i class="bi bi-arrow-right"></i>
+		</a>
 
-	    </div>
+	</div>
 
 	</div>
 	<!-- jQuery -->
@@ -304,7 +324,7 @@ task.status == 1 ? 'In Progress' :
 	<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 	<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
-	<script>
+	<!--<script>
 		$(document).ready(function () {
 
 			$('#taskTable').DataTable({
@@ -327,9 +347,38 @@ task.status == 1 ? 'In Progress' :
 			});
 
 		});
-	</script>
+	</script>-->
 
 	<script>
+
+		$(document).ready(function () {
+
+			$('#taskTable').DataTable({
+				pageLength: 5,
+				lengthMenu: [5, 10, 25, 50],
+				ordering: true,
+				searching: true,
+				responsive: true,
+				autoWidth: false,
+
+				columnDefs: [
+					{orderable: false, targets: 5} // disable sorting on Action
+				],
+
+				language: {
+					search: "_INPUT_",
+					searchPlaceholder: "Search tasks...",
+					lengthMenu: "Show _MENU_ entries",
+					info: "Showing _START_ to _END_ of _TOTAL_ tasks",
+					paginate: {
+						previous: "‹",
+						next: "›"
+					}
+				}
+			});
+
+		});
+
 		function toggleDropdown() {
 			const menu = document.getElementById("dropdownMenu");
 			menu.style.display =
@@ -401,6 +450,20 @@ task.status == 1 ? 'In Progress' :
 			});
 
 			parent.classList.toggle("open");
+		}
+
+		const searchInput = document.getElementById("globalSearch");
+
+		if (searchInput) {
+			searchInput.addEventListener("keyup", function () {
+				let value = this.value.toLowerCase();
+				let rows = document.querySelectorAll(".task-table tbody tr");
+
+				rows.forEach(row => {
+					let text = row.innerText.toLowerCase();
+					row.style.display = text.includes(value) ? "" : "none";
+				});
+			});
 		}
 	</script>
 

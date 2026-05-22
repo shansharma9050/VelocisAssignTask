@@ -22,13 +22,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.CustomUserPrincipal;
 import com.example.demo.assignmentofice.model.AssignmentOfficeModel;
 import com.example.demo.assignmentofice.model.DeveloperModel;
 import com.example.demo.assignmentofice.model.ProjectModel;
+import com.example.demo.assignmentofice.model.WeeklyPlanModel;
 import com.example.demo.feignclient.DeveloperClient;
 import com.example.demo.repository.AssignmentOfficeRepository;
+import com.example.demo.repository.ProjectRepository;
 import com.example.demo.restController.TaskAssignmentRestController;
 import com.example.model.common.model.SpBootProModel;
 
@@ -53,6 +56,9 @@ public class TaskAssignmentController {
 	
 	@Autowired
 	private DeveloperClient developerClient;
+	
+	@Autowired
+	private ProjectRepository projectRepository;
 
 	@GetMapping("/assignTask")
 	public String taskAssign(Model model) throws IOException {
@@ -67,6 +73,38 @@ public class TaskAssignmentController {
 		model.addAttribute("projects", proList);
 		return "task_assignment";
 	}
+	
+	@GetMapping("/main_dashboard")
+	public String mainDashboard(Model model) throws IOException {
+		
+		return "main_dashboard";
+	}
+	
+	@GetMapping("/project_management")
+	public String projectManagement(Model model) throws IOException {
+		
+		return "project_management";
+	}
+	
+	@GetMapping("/weekly_planner")
+	public String weeklyPlanner(Model model,@ModelAttribute("message") String message) throws IOException {
+		
+		if(message!=null ) {
+			model.addAttribute("message", message);
+			 }
+		List<ProjectModel> proList = taskAssignmentRestController.getProject();
+		model.addAttribute("projects", proList);
+		return "weekly_planner";
+	}
+	
+	@GetMapping("/weekly_report")
+	public String weekly_report(Model model) throws IOException {
+		
+		List<ProjectModel> proList = taskAssignmentRestController.getProject();
+		model.addAttribute("projects", proList);
+		return "weekly_report";
+	}
+
 
 	@GetMapping("/developer")
 	public String developer(Model model) throws IOException {
@@ -120,11 +158,58 @@ public class TaskAssignmentController {
 	}
 
 	@GetMapping("/project")
-	public String project() {
-
+	public String project(@ModelAttribute("message") String message,Model model) {
+		List<SpBootProModel> devList = developerClient.getDeveloperList();
+		List<SpBootProModel> devList1 = devList.stream().filter(a -> a.getRole().equals("Developer") && a.getUserid()!=0)
+				.collect(Collectors.toList());
+		
+		
+		 if(message!=null ) {
+		model.addAttribute("message", message);
+		 }
+		model.addAttribute("project", new ProjectModel());
+	    model.addAttribute("projectList", projectRepository.findAll());
+		model.addAttribute("developers", devList1);
 		return "project";
 	}
 
+	@GetMapping("/editProject/{id}")
+	public String editProject(@PathVariable Long id, Model model) {
+
+		List<SpBootProModel> devList = developerClient.getDeveloperList();
+		List<SpBootProModel> devList1 = devList.stream().filter(a -> a.getRole().equals("Developer") && a.getUserid()!=0)
+				.collect(Collectors.toList());
+		
+	    ProjectModel project = projectRepository.findById(id).orElse(null);
+
+	    List<Long> selectedDevIds = project.getDeveloperIds();
+
+	    model.addAttribute("selectedDevIds", selectedDevIds);
+	    model.addAttribute("project", project); 
+	    model.addAttribute("developers", devList1);
+	    model.addAttribute("projectList", projectRepository.findAll());
+
+	    return "project";
+	}
+	
+	@GetMapping("/deleteProject/{id}")
+	public String deleteProject(@PathVariable Long id, Model model) {
+
+		List<SpBootProModel> devList = developerClient.getDeveloperList();
+		List<SpBootProModel> devList1 = devList.stream().filter(a -> a.getRole().equals("Developer") && a.getUserid()!=0)
+				.collect(Collectors.toList());
+		
+	    projectRepository.deleteById(id);
+
+	    if(id!=null ) {
+	    model.addAttribute("message", "Project Deleted Successfully"); 
+	    }
+	    model.addAttribute("developers", devList1);
+	    model.addAttribute("projectList", projectRepository.findAll());
+
+	    return "project";
+	}
+	
 	@GetMapping("/assignedTask")
 	public String task(Model model) throws IOException {
 
@@ -179,13 +264,33 @@ public class TaskAssignmentController {
 	
 
 	@PostMapping("/saveProject")
-	public String saveProject(@ModelAttribute("project") ProjectModel projectModel, Model model) throws IOException {
-		taskAssignmentRestController.createProject(projectModel);
+	public String saveProject(
+	        @RequestParam(value="developers", required = false) List<Long> developerIds,
+	        @ModelAttribute("project") ProjectModel projectModel,
+	        RedirectAttributes redirectAttributes) {
+		
+		System.out.println("Incoming IDs=========>: " + developerIds);
 
-		taskAssignmentRestController.createProject(projectModel);
+		taskAssignmentRestController.createProject(developerIds, projectModel);
+		
 
-		model.addAttribute("message", "Data Saved Successfully");
+	    redirectAttributes.addFlashAttribute("message", "Project Saved Successfully");
 
-		return "redirect:/taskassignment/project";
+	    return "redirect:"+apiUrl+"/taskassignment/project";  
 	}
+	
+	@PostMapping("/weeklyPlannerSaving")
+	public String weeklyPlannerSaving(
+	        @ModelAttribute("WeeklyPlanModel") WeeklyPlanModel weeklyPlanModel,
+	        RedirectAttributes redirectAttributes) throws IOException {
+		
+
+		taskAssignmentRestController.weeklyPlannerSaving(weeklyPlanModel);
+		
+
+	    redirectAttributes.addFlashAttribute("message", "Weekly Plan Saved Successfully");
+
+	    return "redirect:"+apiUrl+"/taskassignment/weekly_planner";  
+	}
+	
 }
