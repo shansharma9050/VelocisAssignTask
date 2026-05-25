@@ -23,7 +23,7 @@ public class SecurityConfig {
 
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-            		.requestMatchers("/images/**","/**.css",
+            		.requestMatchers("/images/**","/**.css","/css/**",
                             "/**.js").permitAll()
                 .anyRequest().authenticated()
             )

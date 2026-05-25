@@ -22,13 +22,13 @@
             <h4>Email</h4>
         </div>
 
-        <form class="search-mail" th:action="@{/dashboard/email/search}" method="get">
+        <form class="search-mail" th:action="@{/dashboard/search}" method="get">
             <i class="fa fa-search"></i>
             <input name="keyword" placeholder="Search mail">
         </form>
 
         <div class="profile">
-            <span th:text="${username}">user@mail.com</span>
+            <span th:text="${#authentication.principal.userName}">user@mail.com</span>
             <div class="avatar">
                 <i class="fa fa-user"></i>
             </div>
@@ -47,23 +47,23 @@
                 <i class="fa fa-inbox"></i> Inbox
             </a>
 
-            <a th:href="@{/dashboard/email/starred}" th:classappend="${activeFolder == 'starred'} ? 'active'">
+            <a th:href="@{/dashboard/starred}" th:classappend="${activeFolder == 'starred'} ? 'active'">
                 <i class="fa fa-star"></i> Starred
             </a>
 
-            <a th:href="@{/dashboard/email/sent}" th:classappend="${activeFolder == 'sent'} ? 'active'">
+            <a th:href="@{/dashboard/sent}" th:classappend="${activeFolder == 'sent'} ? 'active'">
                 <i class="fa fa-paper-plane"></i> Sent
             </a>
 
-            <a th:href="@{/dashboard/email/drafts}" th:classappend="${activeFolder == 'drafts'} ? 'active'">
+            <a th:href="@{/dashboard/drafts}" th:classappend="${activeFolder == 'drafts'} ? 'active'">
                 <i class="fa fa-file"></i> Drafts
             </a>
 
-            <a th:href="@{/dashboard/email/archived}" th:classappend="${activeFolder == 'archived'} ? 'active'">
+            <a th:href="@{/dashboard/archived}" th:classappend="${activeFolder == 'archived'} ? 'active'">
                 <i class="fa fa-box-archive"></i> Archive
             </a>
 
-            <a th:href="@{/dashboard/email/trash}" th:classappend="${activeFolder == 'trash'} ? 'active'">
+            <a th:href="@{/dashboard/trash}" th:classappend="${activeFolder == 'trash'} ? 'active'">
                 <i class="fa fa-trash"></i> Trash
             </a>
         </aside>
@@ -83,11 +83,11 @@
 
             <a class="message-row"
                th:each="mail : ${emails}"
-               th:href="@{/dashboard/email/view/{id}(id=${mail.id})}"
+               th:href="@{/dashboard/view/{id}(id=${mail.id})}"
                th:classappend="${selectedMail != null and selectedMail.id == mail.id} ? 'selected' : ''">
 
                 <div class="row-main">
-                    <form th:action="@{/dashboard/email/{id}/star(id=${mail.id})}" method="post">
+                    <form th:action="@{/dashboard/{id}/star(id=${mail.id})}" method="post">
                         <button type="submit" class="star-btn">
                             <i th:class="${mail.starred} ? 'fa-solid fa-star active-star' : 'fa-regular fa-star'"></i>
                         </button>
@@ -127,13 +127,13 @@
                     </div>
 
                     <div class="actions">
-                        <form th:action="@{/dashboard/email/{id}/archive(id=${selectedMail.id})}" method="post">
+                        <form th:action="@{/dashboard/{id}/archive(id=${selectedMail.id})}" method="post">
                             <button title="Archive">
                                 <i class="fa fa-box-archive"></i>
                             </button>
                         </form>
 
-                        <form th:action="@{/dashboard/email/{id}/trash(id=${selectedMail.id})}" method="post">
+                        <form th:action="@{/dashboard/{id}/trash(id=${selectedMail.id})}" method="post">
                             <button title="Delete">
                                 <i class="fa fa-trash"></i>
                             </button>
@@ -173,12 +173,12 @@
                 </div>
 
                 <div class="compose-footer">
-                    <button type="submit" th:formaction="@{/dashboard/email/send}" class="send-btn">
+                    <button type="submit" th:formaction="@{/dashboard/send}" class="send-btn">
                         <i class="fa fa-paper-plane"></i>
                         Send
                     </button>
 
-                    <button type="submit" th:formaction="@{/dashboard/email/draft}" class="draft-btn">
+                    <button type="submit" th:formaction="@{/dashboard/draft}" class="draft-btn">
                         Save Draft
                     </button>
                 </div>

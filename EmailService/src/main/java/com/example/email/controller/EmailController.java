@@ -1,31 +1,30 @@
 package com.example.email.controller;
 
-import java.security.Principal;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.email.dto.ComposeMailDTO;
 import com.example.email.model.EmailEntity;
 import com.example.email.service.EmailService;
 
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
+import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/dashboard/email")
+@RequestMapping("/dashboard")
 public class EmailController {
 
+	@Autowired
+	private String apiUrl;
+	
     private final EmailService emailService;
 
-    @GetMapping
+    @GetMapping("/email")
     public String inbox(Model model, Principal principal) {
         return loadPage(model, principal, "inbox", emailService.inbox(principal.getName()), null);
     }
@@ -70,31 +69,31 @@ public class EmailController {
     @PostMapping("/send")
     public String send(@ModelAttribute ComposeMailDTO dto, Principal principal) {
         emailService.sendMail(dto, principal.getName());
-        return "redirect:/dashboard/email/sent";
+        return "redirect:"+apiUrl+"/dashboard/sent";
     }
 
     @PostMapping("/draft")
     public String draft(@ModelAttribute ComposeMailDTO dto, Principal principal) {
         emailService.saveDraft(dto, principal.getName());
-        return "redirect:/dashboard/email/drafts";
+        return "redirect:"+apiUrl+"/dashboard/drafts";
     }
 
     @PostMapping("/{id}/star")
     public String star(@PathVariable Long id, Principal principal) {
         emailService.toggleStar(id, principal.getName());
-        return "redirect:/dashboard/email/view/" + id;
+        return "redirect:"+apiUrl+"/dashboard/view/" + id;
     }
 
     @PostMapping("/{id}/archive")
     public String archive(@PathVariable Long id, Principal principal) {
         emailService.archive(id, principal.getName());
-        return "redirect:/dashboard/email";
+        return "redirect:"+apiUrl+"/dashboard/email";
     }
 
     @PostMapping("/{id}/trash")
     public String trash(@PathVariable Long id, Principal principal) {
         emailService.moveToTrash(id, principal.getName());
-        return "redirect:/dashboard/email";
+        return "redirect:"+apiUrl+"/dashboard/email";
     }
 
     private String loadPage(

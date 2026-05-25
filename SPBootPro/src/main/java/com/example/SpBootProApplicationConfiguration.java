@@ -61,7 +61,7 @@ public class SpBootProApplicationConfiguration {
         	    .requestMatchers("/registereduser").hasAuthority("ROLE_ADMIN") 
         	    .requestMatchers("/login","/act","/auth/**","/api/**",
         	                     "/contra/**","/forgot-password/**",
-        	                     "/reset-password/**","/chat/**",
+        	                     "/reset-password/**","/chat/**","/css/**",
         	                     "/send-reset-password","/contra/getDevelopers",
         	                     "/registrationStyle.css",
         	                     "/after-varification-login",
