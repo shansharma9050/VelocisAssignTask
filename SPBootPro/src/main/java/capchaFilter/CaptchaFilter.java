@@ -32,7 +32,11 @@ public class CaptchaFilter extends OncePerRequestFilter {
         	System.out.println("Captcha Token: " + captcha);
 
             if (captcha == null || !captchaService.verifyCaptcha(captcha)) {
-                response.sendRedirect("/login?captchaError");
+            	request.getSession().setAttribute(
+            	        "error",
+            	        "Please verify CAPTCHA");
+
+            	response.sendRedirect("/after-varification-login");
                 return;
             }
         }

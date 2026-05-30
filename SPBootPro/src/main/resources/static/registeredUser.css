@@ -835,7 +835,7 @@ RESPONSIVE
 =============================== */
 .top-search {
     position: absolute;
-    left: 280px; /* after sidebar */
+    left: 30px; /* after sidebar */
     
     display: flex;
     align-items: center;

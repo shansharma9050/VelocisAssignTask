@@ -8,10 +8,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.assignmentofice.model.AssignmentOfficeModel;
+import com.example.demo.assignmentofice.model.ProjectModel;
 
 @Repository
 public interface AssignmentOfficeRepository extends JpaRepository<AssignmentOfficeModel, Long> {
 
 	@Query(value = "SELECT * FROM assignment_office WHERE developer_id = :developerId",nativeQuery = true)
 	List<AssignmentOfficeModel> findByDeveloperId(@Param("developerId") String developerId);
+	
+	public List<AssignmentOfficeModel> findByProject(ProjectModel project);
+	
 }

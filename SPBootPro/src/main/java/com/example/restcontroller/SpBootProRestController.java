@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.model.LoginModel;
 import com.example.model.common.model.SpBootProModel;
+import com.example.model.repository.SpBootProRepository;
 import com.example.repository.LoginRepository;
-import com.example.repository.SpBootProRepository;
 
 
 @RestController

@@ -61,8 +61,8 @@ public class SpBootProApplicationConfiguration {
         	    .requestMatchers("/registereduser").hasAuthority("ROLE_ADMIN") 
         	    .requestMatchers("/login","/act","/auth/**","/api/**",
         	                     "/contra/**","/forgot-password/**",
-        	                     "/reset-password/**","/chat/**",
-        	                     "/send-reset-password",
+        	                     "/reset-password/**","/chat/**","/css/**",
+        	                     "/send-reset-password","/contra/getDevelopers",
         	                     "/registrationStyle.css",
         	                     "/after-varification-login",
         	                     "/loginStyle.css",
@@ -105,7 +105,19 @@ public class SpBootProApplicationConfiguration {
                     
                     response.sendRedirect(apiUrl+"/dash/dashboard");
                 })
-                .failureUrl("/login?error=true")
+                .failureHandler((request, response, exception) -> {
+
+                    String username = request.getParameter("username");
+
+                    // keep username on page
+                    request.getSession().setAttribute("username", username);
+
+                    // error message
+                    request.getSession().setAttribute("error",
+                            "Invalid Password");
+
+                    response.sendRedirect("/after-varification-login");
+                })
                 .permitAll()
             )
             .logout(logout -> logout

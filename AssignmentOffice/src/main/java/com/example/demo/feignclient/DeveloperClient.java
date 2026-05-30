@@ -20,4 +20,7 @@ import com.example.model.common.model.SpBootProModel;
 
 	    @GetMapping("/api/getuserById")
 	    SpBootProModel getUserById(@RequestParam("id") Long id);
+	    
+	    @GetMapping("/contra/getDevelopers")
+	    SpBootProModel getDevelopers(@RequestParam("id") Long id);
 	}

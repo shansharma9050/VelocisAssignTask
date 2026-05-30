@@ -39,6 +39,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             path.equals("/auth/send-otp") ||
             path.equals("/auth/verify-otp") ||
             path.equals("/contra/register") ||
+            path.equals("/contra/getDevelopers") ||
             path.endsWith(".css") ||
             path.endsWith(".js") ||
             path.startsWith("/images")||

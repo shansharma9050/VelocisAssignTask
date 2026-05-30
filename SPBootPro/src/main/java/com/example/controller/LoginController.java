@@ -28,6 +28,7 @@ import com.example.service.LoginService;
 import com.example.util.TockenService;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class LoginController {
@@ -42,10 +43,21 @@ public class LoginController {
 	  @Autowired
 		private SpBootProRestController spBootProRestController;
 	 
-    @GetMapping("/after-varification-login")
-    public String afterVarificationlogin() {
-        return "login";
-    }
+	  @GetMapping("/after-varification-login")
+	  public String afterVarificationlogin(
+	          HttpSession session,
+	          Model model) {
+
+	      model.addAttribute("username",
+	              session.getAttribute("username"));
+
+	      model.addAttribute("error",
+	              session.getAttribute("error"));
+
+	      session.removeAttribute("error");
+
+	      return "login";
+	  }
     
     @GetMapping("/login")
     public String login() {

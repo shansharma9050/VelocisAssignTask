@@ -60,7 +60,9 @@
 			<ul>
 
 				<li><a th:href="@{/dash/dashboard}"><i class="bi bi-columns-gap"></i> Dashboard</a>
-				<li sec:authorize="hasAuthority('ROLE_ADMIN')">
+				<li><a th:href="@{/taskassignment/main_dashboard}"><i class="bi bi-columns-gap"></i>Tracker Dashboard</a>
+				</li>
+				<li class="active" sec:authorize="hasAuthority('ROLE_ADMIN')">
 					<a th:href="@{/registereduser}">
 						<i class="bi bi-file-earmark-text"></i> User Application
 					</a>
@@ -73,18 +75,13 @@
 					</div>
 					<ul class="submenu">
 						<li>
-							<a href="#">
+							<a th:href="@{/taskassignment/project_management}">
 								<i class="bi bi-kanban"></i> Project Management
 							</a>
 						</li>
 						<li sec:authorize="hasAuthority('ROLE_ADMIN')"><a th:href="@{/taskassignment/project}"><i
 									class="bi bi-folder-plus"></i> Add Project</a></li>
 					</ul>
-				</li>
-
-				<!-- Bugs -->
-				<li>
-					<a href="#"><i class="bi bi-bug"></i> Bugs</a>
 				</li>
 
 				<!-- Task -->
@@ -95,29 +92,44 @@
 					</div>
 					<ul class="submenu">
 
-						<li class="active"><a th:href="@{/taskassignment/assignTask}"><i class="bi bi-plus-circle"></i>
+						<li><a th:href="@{/taskassignment/assignTask}"><i class="bi bi-plus-circle"></i>
 								Create Task</a></li>
-						<!--<li>
-					    <a href="#">
-					        <i class="bi bi-kanban"></i> Task Planner
-					    </a>
-					</li>-->
-
 						<li>
 							<a th:href="@{/taskassignment/assignedTask}">
 								<i class="bi bi-list-check"></i> All Tasks
 							</a>
 						</li>
-
-						<!--<li>
-					    <a href="#">
-					        <i class="bi bi-hourglass-split"></i> In Progress
-					    </a>
-					</li>-->
+						<li>
+							<a th:href="@{/taskassignment/myProfile}">
+								<i class="bi bi-list-check"></i> My Tasks
+							</a>
+						</li>
 					</ul>
 				</li>
 
-				<li><a href="#"><i class="bi bi-calendar-week"></i> Weekly Planner</a></li>
+				<li class="menu-item">
+					<div class="menu-title" onclick="toggleMenu(this)">
+						<span><i class="bi bi-calendar-week"></i> Weekly Planner</span>
+						<i class="bi bi-chevron-right arrow"></i>
+					</div>
+					<ul class="submenu">
+
+						<li>
+							<a th:href="@{/taskassignment/weekly_report}">
+								<i class="bi bi-bar-chart-line"></i> Weekly Report
+							</a>
+						</li>
+
+						<li>
+							<a th:href="@{/taskassignment/assignedTask}">
+								<i class="bi bi-calendar-week"></i> Weekly Calendar
+							</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="#"><i class="bi bi-bug"></i> Bugs</a>
+				</li>
 				<li><a href="#"><i class="bi bi-headset"></i> Helpdesk</a></li>
 				<li><a href="#"><i class="bi bi-people"></i> Meetings</a></li>
 				<li><a href="#"><i class="bi bi-envelope"></i> Letters</a></li>
@@ -277,39 +289,37 @@
 	<!-- FOOTER BAR -->
 	<div class="footer-bar">
 
-	    <div class="footer-container">
+					<a href="https://vsmart.velocis.in/" class="footer-item blue">
+						<span>V-Smart</span>
+						<i class="bi bi-arrow-right"></i>
+					</a>
 
-	        <div class="footer-item blue">
-	            <span>V-Smart</span>
-	            <i class="bi bi-arrow-right"></i>
-	        </div>
+					<a href="https://omportal.velocis.in/" class="footer-item orange">
+						<span>OMP</span>
+						<i class="bi bi-arrow-right"></i>
+					</a>
 
-	        <div class="footer-item orange">
-	            <span>OMP</span>
-	            <i class="bi bi-arrow-right"></i>
-	        </div>
+					<a href="https://verr.velocis.in/dataRepository/" class="footer-item purple">
+						<span>VERR</span>
+						<i class="bi bi-arrow-right"></i>
+					</a>
 
-	        <div class="footer-item purple">
-	            <span>VERR</span>
-	            <i class="bi bi-arrow-right"></i>
-	        </div>
+					<a href="https://portal.zinghr.com/2015/pages/authentication/Velocis.htm" class="footer-item darkblue">
+						<span>Zing HR</span>
+						<i class="bi bi-arrow-right"></i>
+					</a>
 
-	        <div class="footer-item darkblue">
-	            <span>Zing HR</span>
-	            <i class="bi bi-arrow-right"></i>
-	        </div>
+					<a href="https://payroll.velocis.in/EasyPAY/view/loginmain.aspx" class="footer-item green">
+						
+						<span>Payroll</span>
+						<i class="bi bi-arrow-right"></i>
+					</a>
 
-	        <div class="footer-item green">
-	            <span>Payroll</span>
-	            <i class="bi bi-arrow-right"></i>
-	        </div>
-
-	        <div class="footer-item indigo">
-	            <span>Tech Support</span>
-	            <i class="bi bi-arrow-right"></i>
-	        </div>
-
-	    </div>
+					<a href="https://staging7.velocis.in/techsupport" class="footer-item indigo">
+						<span>Tech Support</span>
+						<i class="bi bi-arrow-right"></i>
+					</a>
+				</div>
 
 	</div>
 </body>

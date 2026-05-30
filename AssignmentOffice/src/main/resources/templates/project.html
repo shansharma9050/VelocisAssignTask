@@ -16,8 +16,8 @@
 			<i id="themeIcon" class="fa-solid fa-moon"></i>
 		</div>
 		<div class="top-search">
-		    <i class="bi bi-search"></i>
-		    <input type="text" placeholder="Search tasks, projects..." id="globalSearch">
+			<i class="bi bi-search"></i>
+			<input type="text" placeholder="Search tasks, projects..." id="globalSearch">
 		</div>
 		<div class="user-dropdown">
 
@@ -58,7 +58,10 @@
 			<ul>
 
 				<li><a th:href="@{/dash/dashboard}"><i class="bi bi-columns-gap"></i> Dashboard</a>
-				<li sec:authorize="hasAuthority('ROLE_ADMIN')">
+				<li><a th:href="@{/taskassignment/main_dashboard}"><i class="bi bi-columns-gap"></i>Tracker
+						Dashboard</a>
+				</li>
+				<li class="active" sec:authorize="hasAuthority('ROLE_ADMIN')">
 					<a th:href="@{/registereduser}">
 						<i class="bi bi-file-earmark-text"></i> User Application
 					</a>
@@ -71,13 +74,12 @@
 					</div>
 					<ul class="submenu">
 						<li>
-							<a href="#">
+							<a th:href="@{/taskassignment/project_management}">
 								<i class="bi bi-kanban"></i> Project Management
 							</a>
 						</li>
-						<li class="active" sec:authorize="hasAuthority('ROLE_ADMIN')"><a
-								th:href="@{/taskassignment/project}"><i class="bi bi-folder-plus"></i> Add Project</a>
-						</li>
+						<li sec:authorize="hasAuthority('ROLE_ADMIN')"><a th:href="@{/taskassignment/project}"><i
+									class="bi bi-folder-plus"></i> Add Project</a></li>
 					</ul>
 				</li>
 
@@ -96,11 +98,34 @@
 								<i class="bi bi-list-check"></i> All Tasks
 							</a>
 						</li>
-
+						<li>
+							<a th:href="@{/taskassignment/myProfile}">
+								<i class="bi bi-list-check"></i> My Tasks
+							</a>
+						</li>
 					</ul>
 				</li>
 
-				<li><a href="#"><i class="bi bi-calendar-week"></i> Weekly Planner</a></li>
+				<li class="menu-item">
+					<div class="menu-title" onclick="toggleMenu(this)">
+						<span><i class="bi bi-calendar-week"></i> Weekly Planner</span>
+						<i class="bi bi-chevron-right arrow"></i>
+					</div>
+					<ul class="submenu">
+
+						<li>
+							<a th:href="@{/taskassignment/weekly_report}">
+								<i class="bi bi-bar-chart-line"></i> Weekly Report
+							</a>
+						</li>
+
+						<li>
+							<a th:href="@{/taskassignment/assignedTask}">
+								<i class="bi bi-calendar-week"></i> Weekly Calendar
+							</a>
+						</li>
+					</ul>
+				</li>
 				<li>
 					<a href="#"><i class="bi bi-bug"></i> Bugs</a>
 				</li>
@@ -156,6 +181,9 @@
 		<!-- Main Content -->
 		<div class="main-content">
 
+			<div th:if="${message != null and message != ''}" class="alert-success">
+				<span th:text="${message}"></span>
+			</div>
 			<div class="project-layout">
 
 				<!-- ================= LEFT: FORM ================= -->
@@ -164,61 +192,114 @@
 
 					<form th:action="@{/taskassignment/saveProject}" method="post">
 
+						<!-- ✅ Hidden ID for update -->
+						<input type="hidden" name="id"
+							th:value="${project != null && project.id != null ? project.id : ''}" />
+
+						<!-- Project Name -->
 						<div class="form-group">
 							<label>Project Name</label>
-							<input type="text" name="projectName" required />
+							<input type="text" name="projectName"
+								th:value="${project != null && project.projectName != null ? project.projectName : ''}"
+								required />
 						</div>
 
 						<div class="form-group">
-							<label>Project Manager</label>
-							<input type="text" name="projectManager" required />
-						</div>
-
-						<div class="form-group">
-							<label>Project Owner</label>
-							<input type="text" name="projectOwner" placeholder="Enter owner name" />
-						</div>
-
-						<div class="form-group">
-							<label>Developers (Multiple)</label>
-							<select name="developerIds" multiple size="5">
-								<option th:each="d : ${developers}" th:value="${d.id}" th:text="${d.username}">
-								</option>
+							<label>Project Type</label>
+							<select name="projectType" id="projectType" onchange="loadProjects()">
+								<option >Select Type</option>
+								<option value="dev" th:selected="${project != null && project.projectType == 'dev'}">Development</option>
+								<option value="support" th:selected="${project != null && project.status == 'support'}">Maintenance & Support</option>
 							</select>
 						</div>
 
+						<!-- Project Manager -->
+						<div class="form-group">
+							<label>Project Manager</label>
+							<input type="text" name="projectManager"
+								th:value="${project != null && project.projectManager != null ? project.projectManager : ''}"
+								required />
+						</div>
+
+						<!-- Project Owner -->
+						<div class="form-group">
+							<label>Project Owner</label>
+							<input type="text" name="projectOwner"
+								th:value="${project != null && project.projectOwner != null ? project.projectOwner : ''}" />
+						</div>
+
+						<!-- Developers -->
+						<div class="form-group">
+							<div class="multi-checkbox">
+								<label class="main-label">Developers</label>
+
+								<div class="checkbox-list">
+									<label class="checkbox-item" th:each="d : ${developers}">
+
+										<input type="checkbox" name="developers" th:value="${d.id}"
+											th:checked="${selectedDevIds != null && selectedDevIds.contains(d.id)}" />
+
+										<span th:text="${d.username}"></span>
+									</label>
+								</div>
+							</div>
+						</div>
+
+						<!-- Start Date -->
 						<div class="form-group">
 							<label>Start Date</label>
-							<input type="date" name="startDate" />
+							<input type="date" name="startDate"
+							       th:value="${project.startDate != null ? project.startDate : ''}"/>
 						</div>
 
+						<!-- End Date -->
 						<div class="form-group">
 							<label>End Date</label>
-							<input type="date" name="endDate" />
+							<input type="date" name="endDate"
+							       th:value="${project.endDate != null ? project.endDate : ''}" />
 						</div>
 
+						<!-- Description -->
 						<div class="form-group">
 							<label>Description</label>
-							<textarea name="description"></textarea>
+							<textarea name="description"
+								th:text="${project != null && project.description != null ? project.description : ''}">
+					        </textarea>
 						</div>
 
+						<!-- Status -->
 						<div class="form-group">
 							<label>Status</label>
 							<select name="status">
 								<option value="">-- Select --</option>
-								<option>Planned</option>
-								<option>In Progress</option>
-								<option>Completed</option>
-								<option>On Hold</option>
+
+								<option value="Planned" th:selected="${project != null && project.status == 'Planned'}">
+									Planned</option>
+
+								<option value="In Progress"
+									th:selected="${project != null && project.status == 'In Progress'}">In Progress
+								</option>
+
+								<option value="Completed"
+									th:selected="${project != null && project.status == 'Completed'}">Completed</option>
+
+								<option value="On Hold" th:selected="${project != null && project.status == 'On Hold'}">
+									On Hold</option>
 							</select>
 						</div>
 
+						<!-- Budget -->
 						<div class="form-group">
 							<label>Budget (₹)</label>
-							<input type="number" name="budget" />
+							<input type="number" name="budget"
+								th:value="${project != null && project.budget != null ? project.budget : ''}" />
 						</div>
 
-						<button class="btn-submit">Save Project</button>
+						<!-- Submit -->
+						<button class="btn-submit">
+							<span
+								th:text="${project != null && project.id != null ? 'Update Project' : 'Save Project'}"></span>
+						</button>
 
 					</form>
 				</div>
@@ -234,19 +315,32 @@
 
 						<thead>
 							<tr>
+								<th>S.No.</th>
 								<th>Name</th>
 								<th>Manager</th>
 								<th>Status</th>
 								<th>Start</th>
+								<th>Action</th>
 							</tr>
 						</thead>
 
 						<tbody>
-							<tr th:each="p : ${projectList}">
+							<tr th:each="p,istat : ${projectList}">
+								<td th:text="${istat.count}"></td>
 								<td th:text="${p.projectName} ?: 'N/A'"></td>
-								<td th:text="${p.projectManagerName} ?: 'N/A'"></td>
+								<td th:text="${p.projectManager} ?: 'N/A'"></td>
 								<td th:text="${p.status} ?: 'N/A'"></td>
 								<td th:text="${p.startDate} ?: 'N/A'"></td>
+								<td>
+									<a th:href="@{/taskassignment/editProject/{id}(id=${p.id})}">
+										<i class="fa-solid fa-pen-to-square" style="color:#0d6efd;"></i>
+									</a>
+
+									<a th:href="@{/taskassignment/deleteProject/{id}(id=${p.id})}"
+										onclick="return confirm('Are you sure to delete?')">
+										<i class="fa-solid fa-trash" style="color:red; margin-left:10px;"></i>
+									</a>
+								</td>
 							</tr>
 						</tbody>
 
@@ -267,120 +361,128 @@
 	<!-- FOOTER BAR -->
 	<div class="footer-bar">
 
-	    <div class="footer-container">
+		<a href="https://vsmart.velocis.in/" class="footer-item blue">
+			<span>V-Smart</span>
+			<i class="bi bi-arrow-right"></i>
+		</a>
 
-	        <div class="footer-item blue">
-	            <span>V-Smart</span>
-	            <i class="bi bi-arrow-right"></i>
-	        </div>
+		<a href="https://omportal.velocis.in/" class="footer-item orange">
+			<span>OMP</span>
+			<i class="bi bi-arrow-right"></i>
+		</a>
 
-	        <div class="footer-item orange">
-	            <span>OMP</span>
-	            <i class="bi bi-arrow-right"></i>
-	        </div>
+		<a href="https://verr.velocis.in/dataRepository/" class="footer-item purple">
+			<span>VERR</span>
+			<i class="bi bi-arrow-right"></i>
+		</a>
 
-	        <div class="footer-item purple">
-	            <span>VERR</span>
-	            <i class="bi bi-arrow-right"></i>
-	        </div>
+		<a href="https://portal.zinghr.com/2015/pages/authentication/Velocis.htm" class="footer-item darkblue">
+			<span>Zing HR</span>
+			<i class="bi bi-arrow-right"></i>
+		</a>
 
-	        <div class="footer-item darkblue">
-	            <span>Zing HR</span>
-	            <i class="bi bi-arrow-right"></i>
-	        </div>
+		<a href="https://payroll.velocis.in/EasyPAY/view/loginmain.aspx" class="footer-item green">
 
-	        <div class="footer-item green">
-	            <span>Payroll</span>
-	            <i class="bi bi-arrow-right"></i>
-	        </div>
+			<span>Payroll</span>
+			<i class="bi bi-arrow-right"></i>
+		</a>
 
-	        <div class="footer-item indigo">
-	            <span>Tech Support</span>
-	            <i class="bi bi-arrow-right"></i>
-	        </div>
-
-	    </div>
+		<a href="https://staging7.velocis.in/techsupport" class="footer-item indigo">
+			<span>Tech Support</span>
+			<i class="bi bi-arrow-right"></i>
+		</a>
 
 	</div>
 
-<script>
-	function toggleDropdown() {
-		const menu = document.getElementById("dropdownMenu");
+	<script>
+		function toggleDropdown() {
+			const menu = document.getElementById("dropdownMenu");
 
-		if (menu.style.display === "flex") {
-			menu.style.display = "none";
-		} else {
-			menu.style.display = "flex";
-		}
-	}
-
-	function toggleTheme() {
-		document.body.classList.toggle("dark");
-
-		const icon = document.getElementById("themeIcon");
-
-		if (document.body.classList.contains("dark")) {
-			icon.classList.remove("fa-moon");
-			icon.classList.add("fa-sun");
-			localStorage.setItem("theme", "dark");
-		} else {
-			icon.classList.remove("fa-sun");
-			icon.classList.add("fa-moon");
-			localStorage.setItem("theme", "light");
-		}
-	}
-
-	// load saved theme
-	window.onload = function () {
-		const savedTheme = localStorage.getItem("theme");
-
-		if (savedTheme === "dark") {
-			document.body.classList.add("dark");
-			document.getElementById("themeIcon")
-				.classList.replace("fa-moon", "fa-sun");
-		}
-	}
-
-	function updateClock() {
-		const now = new Date();
-
-		const options = {
-			weekday: 'short',
-			day: '2-digit',
-			month: 'short',
-			year: 'numeric'
-		};
-
-		const datePart = now.toLocaleDateString('en-IN', options);
-
-		const timePart = now.toLocaleTimeString('en-IN', {
-			hour12: false
-		});
-
-		const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-		document.getElementById("liveClock").textContent =
-			`${datePart} ${timePart} ${timezone}`;
-	}
-
-	// update every second
-	setInterval(updateClock, 1000);
-
-	// run immediately on load
-	updateClock();
-
-	function toggleMenu(element) {
-		const parent = element.parentElement;
-
-		// close others (optional but looks professional)
-		document.querySelectorAll(".menu-item").forEach(item => {
-			if (item !== parent) {
-				item.classList.remove("open");
+			if (menu.style.display === "flex") {
+				menu.style.display = "none";
+			} else {
+				menu.style.display = "flex";
 			}
-		});
+		}
 
-		parent.classList.toggle("open");
-	}
-</script>
+		function toggleMenu(el) {
+			el.parentElement.classList.toggle("open");
+		}
+
+		function toggleTheme() {
+			document.body.classList.toggle("dark");
+
+			const icon = document.getElementById("themeIcon");
+
+			if (document.body.classList.contains("dark")) {
+				icon.classList.remove("fa-moon");
+				icon.classList.add("fa-sun");
+				localStorage.setItem("theme", "dark");
+			} else {
+				icon.classList.remove("fa-sun");
+				icon.classList.add("fa-moon");
+				localStorage.setItem("theme", "light");
+			}
+		}
+
+		// load saved theme
+		window.onload = function () {
+			const savedTheme = localStorage.getItem("theme");
+
+			if (savedTheme === "dark") {
+				document.body.classList.add("dark");
+				document.getElementById("themeIcon")
+					.classList.replace("fa-moon", "fa-sun");
+			}
+		}
+		function updateClock() {
+			const now = new Date();
+
+			const options = {
+				weekday: 'short',
+				day: '2-digit',
+				month: 'short',
+				year: 'numeric'
+			};
+
+			const datePart = now.toLocaleDateString('en-IN', options);
+
+			const timePart = now.toLocaleTimeString('en-IN', {
+				hour12: false
+			});
+
+			const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+			document.getElementById("liveClock").textContent =
+				`${datePart} ${timePart} ${timezone}`;
+		}
+
+		// update every second
+		setInterval(updateClock, 1000);
+
+		// run immediately on load
+		updateClock();
+
+
+		const searchInput = document.getElementById("globalSearch");
+
+		if (searchInput) {
+			searchInput.addEventListener("keyup", function () {
+				let value = this.value.toLowerCase();
+				let rows = document.querySelectorAll(".project-table tbody tr");
+
+				rows.forEach(row => {
+					let text = row.innerText.toLowerCase();
+					row.style.display = text.includes(value) ? "" : "none";
+				});
+			});
+		}
+
+		setTimeout(() => {
+			const msg = document.querySelector(".alert-success");
+			if (msg) msg.style.display = "none";
+		}, 3000);
+	</script>
 </body>
+
 </html>
